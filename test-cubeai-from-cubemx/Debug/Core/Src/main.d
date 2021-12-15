@@ -58,7 +58,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../USB_HOST/App/usb_host.h \
  ../Middlewares/ST/AI/Inc/ai_datatypes_defines.h \
  ../Middlewares/ST/AI/Inc/ai_platform.h ../X-CUBE-AI/App/sine_model.h \
- ../X-CUBE-AI/App/sine_model_config.h ../X-CUBE-AI/App/sine_model_data.h
+ ../Middlewares/ST/AI/Inc/ai_platform_interface.h \
+ ../Middlewares/ST/AI/Inc/datatypes_network.h \
+ ../Middlewares/ST/AI/Inc/ai_datatypes_format.h \
+ ../Middlewares/ST/AI/Inc/core_datatypes.h \
+ ../Middlewares/ST/AI/Inc/formats_list.h \
+ ../X-CUBE-AI/App/sine_model_data.h
 
 ../Core/Inc/main.h:
 
@@ -190,6 +195,14 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../X-CUBE-AI/App/sine_model.h:
 
-../X-CUBE-AI/App/sine_model_config.h:
+../Middlewares/ST/AI/Inc/ai_platform_interface.h:
+
+../Middlewares/ST/AI/Inc/datatypes_network.h:
+
+../Middlewares/ST/AI/Inc/ai_datatypes_format.h:
+
+../Middlewares/ST/AI/Inc/core_datatypes.h:
+
+../Middlewares/ST/AI/Inc/formats_list.h:
 
 ../X-CUBE-AI/App/sine_model_data.h:

@@ -2,12 +2,12 @@
   ******************************************************************************
   * @file    sine_model.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Mon Dec 13 11:51:32 2021
+  * @date    Tue Dec 14 21:02:39 2021
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2018 STMicroelectronics.
   * All rights reserved.
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -18,55 +18,39 @@
   ******************************************************************************
   */
 
-#ifndef AI_SINE_MODEL_H
-#define AI_SINE_MODEL_H
+#ifndef __AI_SINE_MODEL_H__
+#define __AI_SINE_MODEL_H__
 #pragma once
 
-#include "sine_model_config.h"
 #include "ai_platform.h"
+#include "ai_platform_interface.h"
 
-/******************************************************************************/
 #define AI_SINE_MODEL_MODEL_NAME          "sine_model"
-#define AI_SINE_MODEL_ORIGIN_MODEL_NAME   "sine_model"
 
-/******************************************************************************/
-#define AI_SINE_MODEL_ACTIVATIONS_ALIGNMENT   (4)
-
-
-
-/******************************************************************************/
-#define AI_SINE_MODEL_IN_NUM        (1)
+#define AI_SINE_MODEL_IN_NUM       (1)
 #define AI_SINE_MODEL_IN { \
   AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 1, 1, 1, 1, NULL), \
 }
 #define AI_SINE_MODEL_IN_SIZE { \
-  AI_SINE_MODEL_IN_1_SIZE, \
+  (1 * 1 * 1), \
 }
-#define AI_SINE_MODEL_IN_SIZE_BYTES { \
-  AI_SINE_MODEL_IN_1_SIZE_BYTES, \
-}
-#define AI_SINE_MODEL_IN_1_CHANNEL     (1)
-#define AI_SINE_MODEL_IN_1_SIZE        (1)
-#define AI_SINE_MODEL_IN_1_SIZE_BYTES  (AI_SINE_MODEL_IN_1_SIZE * 4)
+#define AI_SINE_MODEL_IN_1_SIZE  (1 * 1 * 1)
+#define AI_SINE_MODEL_IN_1_SIZE_BYTES  ((1 * 1 * 1) * 4)
 
-/******************************************************************************/
-#define AI_SINE_MODEL_OUT_NUM       (1)
+
+
+
+#define AI_SINE_MODEL_OUT_NUM      (1)
 #define AI_SINE_MODEL_OUT { \
   AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 1, 1, 1, 1, NULL), \
 }
 #define AI_SINE_MODEL_OUT_SIZE { \
-  AI_SINE_MODEL_OUT_1_SIZE, \
+  (1 * 1 * 1), \
 }
-#define AI_SINE_MODEL_OUT_SIZE_BYTES { \
-  AI_SINE_MODEL_OUT_1_SIZE_BYTES, \
-}
-#define AI_SINE_MODEL_OUT_1_CHANNEL     (1)
-#define AI_SINE_MODEL_OUT_1_SIZE        (1)
-#define AI_SINE_MODEL_OUT_1_SIZE_BYTES  (AI_SINE_MODEL_OUT_1_SIZE * 4)
+#define AI_SINE_MODEL_OUT_1_SIZE  (1 * 1 * 1)
+#define AI_SINE_MODEL_OUT_1_SIZE_BYTES  ((1 * 1 * 1) * 4)
 
-/******************************************************************************/
 #define AI_SINE_MODEL_N_NODES (5)
-
 
 AI_API_DECLARE_BEGIN
 
@@ -91,26 +75,12 @@ AI_API_DECLARE_BEGIN
 /*!
  * @brief Get network library info as a datastruct.
  * @ingroup sine_model
- * @param[in] network: the handler to the network context
  * @param[out] report a pointer to the report struct where to
  * store network info. See @ref ai_network_report struct for details
  * @return a boolean reporting the exit status of the API
  */
-AI_DEPRECATED
 AI_API_ENTRY
 ai_bool ai_sine_model_get_info(
-  ai_handle network, ai_network_report* report);
-
-/*!
- * @brief Get network library report as a datastruct.
- * @ingroup sine_model
- * @param[in] network: the handler to the network context
- * @param[out] report a pointer to the report struct where to
- * store network info. See @ref ai_network_report struct for details
- * @return a boolean reporting the exit status of the API
- */
-AI_API_ENTRY
-ai_bool ai_sine_model_get_report(
   ai_handle network, ai_network_report* report);
 
 /*!
@@ -210,4 +180,4 @@ ai_i32 ai_sine_model_forward(
 
 AI_API_DECLARE_END
 
-#endif /* AI_SINE_MODEL_H */
+#endif /*__AI_SINE_MODEL_H__*/

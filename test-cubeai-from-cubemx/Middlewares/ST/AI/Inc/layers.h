@@ -18,14 +18,12 @@
   ******************************************************************************
   */
 
-#ifndef LAYERS_H
-#define LAYERS_H
+#ifndef __LAYERS_H_
+#define __LAYERS_H_
 #pragma once
 
 #include "layers_common.h"
 #include "layers_conv2d.h"
-#include "layers_custom.h"
-#include "layers_formats_converters.h"
 #include "layers_generic.h"
 #include "layers_nl.h"
 #include "layers_norm.h"
@@ -33,12 +31,6 @@
 #include "layers_rnn.h"
 #include "layers_dense.h"
 #include "layers_sm.h"
-#include "layers_ml_iforest.h"
-#include "layers_ml_svmregressor.h"
-#include "layers_ml_svc.h"
-#include "layers_ml.h"
-
-// #include "layers_template.h"
 
 #ifdef USE_OPERATORS
   #include "layers_lambda.h"
@@ -48,20 +40,49 @@
 AI_API_DECLARE_BEGIN
 
 /*!
- * @struct ai_any_layer_ptr
- * @ingroup layers
- * @brief Generic union for typed layers pointers
+ * @defgroup layers Layers
+ * @brief Definition of the forward functions for the layers and the general
+ * ai_layer datastructure used to abstract specific layer implementation in the
+ * generic forward function definition
+ *
+ * The forward function for a layer computes the layer activations given the
+ * activations of the previous layer. They are added to the layer as function
+ * pointer and called implicitly by the @ref ai_layers_forward_all function.
+ * The input activations are read from layer &rarr; in and the computed
+ * activations stored in layer &rarr; out. The layer type needs to be compatible
+ * with the forward function, but layers with the same layout (e.g. `mp` and
+ * `ap`) can share the same structure.
  */
-typedef struct {
-  ai_layer_type type;              /*!< layer type id (see @ref ai_layer_type) */
-  union {
-#define LAYER_ENTRY(type_, id_, struct_, forward_func_, init_func_, destroy_func_) \
-   AI_CONCAT(ai_layer_, struct_)* struct_;
-#include "layers_list.h"
-  };
-} ai_any_layer_ptr;
 
+/******************************************************************************/
+/* Forward Functions Section                                                  */
+/******************************************************************************/
+
+/*!
+ * @brief Executes a single layer in the network.
+ * @ingroup layers
+ * @param layer the layer to process
+ * @return pointer to the next layer
+ */
+AI_INTERNAL_API
+ai_layer* ai_layers_forward_layer(ai_layer* layer);
+
+
+/*!
+ * @brief Computes the ouptut of the network given the input.
+ * @ingroup layers
+ *
+ * Given a network with the input pre-loaded in the net &rarr; in tensor,
+ * computes the output by calling the forward functions of each layer and
+ * selecting the next layer. When the layer has no successor or it's in a
+ * loop-back configuration (layer &rarr; next is again layer), the function
+ * stops. The result is stored in net &rarr; out.
+ *
+ * @param net the network to evaluate
+ */
+AI_INTERNAL_API
+void ai_layers_forward_all(ai_network* net);
 
 AI_API_DECLARE_END
 
-#endif /*LAYERS_H*/
+#endif /* __LAYERS_H_ */

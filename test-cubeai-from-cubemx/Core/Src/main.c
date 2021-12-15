@@ -173,6 +173,12 @@ int main(void)
 
   /* USER CODE END 1 */
 
+  /* Enable I-Cache---------------------------------------------------------*/
+  //SCB_EnableICache();
+
+  /* Enable D-Cache---------------------------------------------------------*/
+  //SCB_EnableDCache();
+
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -191,30 +197,30 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC3_Init();
+//  MX_ADC3_Init();
   MX_CRC_Init();
-  MX_DCMI_Init();
-  MX_DMA2D_Init();
-  // MX_ETH_Init();
-  MX_FMC_Init();
-  MX_I2C1_Init();
-  MX_I2C3_Init();
-  MX_LTDC_Init();
-  MX_QUADSPI_Init();
-  MX_RTC_Init();
-  MX_SAI2_Init();
-  MX_SDMMC1_SD_Init();
-  MX_SPDIFRX_Init();
-  MX_TIM1_Init();
-  MX_TIM2_Init();
-  MX_TIM3_Init();
-  MX_TIM5_Init();
-  MX_TIM8_Init();
+//  MX_DCMI_Init();
+//  MX_DMA2D_Init();
+//  MX_ETH_Init();
+//  MX_FMC_Init();
+//  MX_I2C1_Init();
+//  MX_I2C3_Init();
+//  MX_LTDC_Init();
+//  MX_QUADSPI_Init();
+//  MX_RTC_Init();
+//  MX_SAI2_Init();
+//  MX_SDMMC1_SD_Init();
+//  MX_SPDIFRX_Init();
+//  MX_TIM1_Init();
+//  MX_TIM2_Init();
+//  MX_TIM3_Init();
+//  MX_TIM5_Init();
+//  MX_TIM8_Init();
   MX_TIM12_Init();
-  MX_USART1_UART_Init();
+//  MX_USART1_UART_Init();
   MX_USART6_UART_Init();
-  MX_FATFS_Init();
-  // MX_USB_HOST_Init();
+//  MX_FATFS_Init();
+//  MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
 
   // Start timer/counter
@@ -248,11 +254,37 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    // MX_USB_HOST_Process();
+    //MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
     LED_Toggle();
-    HAL_Delay(400);
+    HAL_Delay(500);
+
+    // Fill input buffer (use test value)
+	for (uint32_t i = 0; i < AI_SINE_MODEL_IN_1_SIZE; i++)
+	{
+	  ((ai_float *)in_data)[i] = (ai_float)2.0f;
+	}
+
+	// Get current timestamp
+	timestamp = htim12.Instance->CNT;
+
+	// Perform inference
+	nbatch = ai_sine_model_run(sine_model, &ai_input[0], &ai_output[0]);
+	if (nbatch != 1) {
+	  buf_len = sprintf(buf, "Error: could not run inference\r\n");
+	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+	}
+
+	// Read output (predicted y) of neural network
+	y_val = ((float *)out_data)[0];
+
+	// Print output of neural network along with inference time (microseconds)
+	buf_len = sprintf(buf, "Output: %f | Duration: %lu\r\n", y_val, htim12.Instance->CNT - timestamp);
+	HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+
+	// Wait before doing it again
+	HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -491,7 +523,6 @@ static void MX_DMA2D_Init(void)
   /* USER CODE BEGIN DMA2D_Init 2 */
 
   /* USER CODE END DMA2D_Init 2 */
-
 }
 
 /**

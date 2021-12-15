@@ -18,8 +18,7 @@
       AI_FMT_LUT4 or AI_FMT_LUT8 (compressed formats)
    - pbits_ (3bits) : number of padding bits for the format
    - bits_ (7bits)  : size in bits of the format (NB: integer+fractional bits)
-   - fbits_ (7bits) : number of fractional bits for the format
-     (for AI_FMT_Q only)
+   - fbits_ (7bits) : number of fractional bits for the format (for AI_FMT_Q only)
    
   */
 
@@ -38,13 +37,13 @@ FMT_ENTRY(0, FLOAT16, AI_FMT_FLOAT, 1, 1, 0, 16,  0, 0)
 /* Integer formats (i.e. fractional bits = 0!) */
 FMT_ENTRY(1, U8,  AI_FMT_Q, 0, 0, 0, 8,  0, 0)
 FMT_ENTRY(1, U16, AI_FMT_Q, 0, 0, 0, 16, 0, 0)
-FMT_ENTRY(1, U32, AI_FMT_Q, 0, 0, 0, 32, 0, 0)
+FMT_ENTRY(0, U32, AI_FMT_Q, 0, 0, 0, 32, 0, 0)
 FMT_ENTRY(0, U64, AI_FMT_Q, 0, 0, 0, 64, 0, 0)
 FMT_ENTRY(0, U4,  AI_FMT_Q, 0, 0, 0, 4,  0, 0)
 
 FMT_ENTRY(1, S8,  AI_FMT_Q, 1, 0, 0, 8,  0, 0)
 FMT_ENTRY(1, S16, AI_FMT_Q, 1, 0, 0, 16, 0, 0)
-FMT_ENTRY(1, S32, AI_FMT_Q, 1, 0, 0, 32, 0, 0)
+FMT_ENTRY(0, S32, AI_FMT_Q, 1, 0, 0, 32, 0, 0)
 FMT_ENTRY(0, S64, AI_FMT_Q, 1, 0, 0, 64, 0, 0)
 FMT_ENTRY(0, S4,  AI_FMT_Q, 1, 0, 0, 4,  0, 0)
 
@@ -66,8 +65,5 @@ FMT_ENTRY(0, LUT4_Q15,   AI_FMT_LUT4, 1, 0, 0, 16, 15, 2)
 FMT_ENTRY(0, LUT8_Q15,   AI_FMT_LUT8, 1, 0, 0, 16, 15, 1)
 FMT_ENTRY(0, LUT4_UQ15,  AI_FMT_LUT4, 0, 0, 0, 16, 15, 2)
 FMT_ENTRY(0, LUT8_UQ15,  AI_FMT_LUT8, 0, 0, 0, 16, 15, 1)
-
-/* Boolean format */
-FMT_ENTRY(1, BOOL, AI_FMT_BOOL, 0, 0, 0, 8, 0, 0)
 
 #undef FMT_ENTRY

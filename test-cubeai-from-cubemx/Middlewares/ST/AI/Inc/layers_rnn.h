@@ -17,8 +17,8 @@
   *
   ******************************************************************************
   */
-#ifndef LAYERS_RNN_H
-#define LAYERS_RNN_H
+#ifndef __LAYERS_RNN_H_
+#define __LAYERS_RNN_H_
 #pragma once
 
 #include "layers_common.h"
@@ -32,14 +32,13 @@ AI_API_DECLARE_BEGIN
  * @brief LSTM layer with generic nonlinearities and peephole connections
  */
 typedef AI_ALIGNED_TYPE(struct, 4) ai_layer_lstm_ {
-  AI_LAYER_STATEFUL_FIELDS_DECLARE
+  AI_LAYER_COMMON_FIELDS_DECLARE
   ai_size n_units;        /**< size of the hidden RNN state */
   func_nl activation_nl;  /**< activation nonlinearity (input to cell) */
   func_nl recurrent_nl;   /**< recurrent nonlinearity (hidden to cell) */
   func_nl out_nl;         /**< output nonlinearity (cell to hidden) */
   ai_bool go_backwards;   /**< process reversed input */
   ai_bool reverse_seq;    /**< reverse output sequence */
-  ai_float cell_clip;     /**< cell clip value */
 } ai_layer_lstm;
 
 /*!
@@ -69,27 +68,6 @@ typedef AI_ALIGNED_TYPE(struct, 4) ai_layer_rnn_ {
   ai_bool go_backwards;   /**< process reversed input */
   ai_bool reverse_seq;    /**< reverse output sequence */
 } ai_layer_rnn;
-
-
-/*!
- * @brief Initialize a Long-Short Term Memory (LSTM) layer.
- * @ingroup layers
- *
- * Function used to initialize lstm internal state
- */
-AI_INTERNAL_API
-void init_lstm(ai_layer * layer);
-
-
-/*!
- * @brief Destroy a Long-Short Term Memory (LSTM) layer state.
- * @ingroup layers
- *
- * Function used to destroy lstm internal state
- */
-AI_INTERNAL_API
-void destroy_lstm(ai_layer * layer);
-
 
 /*!
  * @brief Computes the activations of a Long-Short Term Memory (LSTM) layer.
@@ -157,4 +135,4 @@ void forward_rnn(ai_layer * layer);
 
 AI_API_DECLARE_END
 
-#endif /* LAYERS_RNN_H */
+#endif /* __LAYERS_RNN_H_ */

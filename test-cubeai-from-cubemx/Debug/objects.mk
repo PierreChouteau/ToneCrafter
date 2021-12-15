@@ -5,5 +5,5 @@
 
 USER_OBJS :=
 
-LIBS := -l:NetworkRuntime700_CM7_GCC.a
+LIBS := -l:NetworkRuntime512_CM7_GCC.a
 

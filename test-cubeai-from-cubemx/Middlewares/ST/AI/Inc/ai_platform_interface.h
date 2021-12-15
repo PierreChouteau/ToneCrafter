@@ -18,14 +18,13 @@
   ******************************************************************************
   */
 
-#ifndef AI_PLATFORM_INTERFACE_H
-#define AI_PLATFORM_INTERFACE_H
+#ifndef __AI_PLATFORM_INTERFACE_H__
+#define __AI_PLATFORM_INTERFACE_H__
 #pragma once
 
 #include "ai_platform.h"
 
 #include "datatypes_network.h"
-#include "ai_datatypes.h"
 #include "ai_datatypes_format.h"
 
 /*!
@@ -33,18 +32,18 @@
  * @brief Data structures and defines used to implement neural networks
  */
 
+#define AI_PLATFORM_INTERFACE_API_MAJOR    1
+#define AI_PLATFORM_INTERFACE_API_MINOR    4
+#define AI_PLATFORM_INTERFACE_API_MICRO    0
+
 /******************************************************************************/
 #define AI_ERROR_TRAP(net_, type_, code_) \
           ai_platform_network_set_error((net_), AI_CONCAT(AI_ERROR_,type_), \
                             AI_CONCAT(AI_ERROR_CODE_,code_))
 
-/*!  AI_CAST SECTION                       ************************************/
-#define AI_CAST(type_, expr_)            ((type_)(expr_))
-
 /*!  AI_PTR HANDLERS SECTION               ************************************/
-
-#define AI_PTR(ptr_)                     AI_CAST(ai_ptr, ptr_)
-#define AI_PTR_CONST(ptr_)               AI_CAST(ai_ptr_const, ptr_)
+#define AI_PTR(ptr_)                     ((ai_ptr)(ptr_))
+#define AI_PTR_CONST(ptr_)               ((ai_ptr_const)(ptr_))
 
 /*!  STATIC ARRAYS ALLOCATOR SECTION       ************************************/
 #define AI_PACK_STORAGE_ARRAY(type_, dim_, ...) \
@@ -110,9 +109,6 @@ AI_PACKED_STRUCT_END
     dim_, \
     buffer_)
 
-#define AI_SHAPE_ALLOCATE_STATIC \
-  AI_SHAPE_INIT(AI_SHAPE_MAX_DIMENSION, 0)
-
 /*!
  * @enum ai_shape_type
  * @ingroup ai_platform_interface
@@ -132,8 +128,27 @@ typedef enum {
  * @ingroup ai_platform_interface
  * @brief Dimensions for generic 4D tensors
  */
-typedef ai_storage_klass ai_shape;
+#if 1
 
+#if 0
+AI_PACKED_STRUCT_START
+typedef AI_ALIGNED_TYPE(struct, 4) AI_PACKED ai_shape_s {
+  ai_u32      type  : 8;
+  ai_u32      size  : 24; 
+  ai_shape_dimension data[AI_SHAPE_MAX_DIMENSION]; /*!< 4D tensor shape */
+} ai_shape;
+AI_PACKED_STRUCT_END
+#else
+typedef ai_storage_klass ai_shape;
+#endif
+
+#else
+AI_PACKED_STRUCT_START
+typedef AI_ALIGNED_TYPE(struct, 4) AI_PACKED ai_shape_s {
+  ai_shape_dimension* dimension; /*!< ND tensor shape */
+} ai_shape;
+AI_PACKED_STRUCT_END
+#endif
 
 /*!  AI_STRIDES HANDLERS SECTION           ************************************/
 #define AI_STRIDE_INIT(dim_, ...) \
@@ -149,9 +164,6 @@ typedef ai_storage_klass ai_shape;
     dim_, \
     buffer_)
 
-#define AI_STRIDE_ALLOCATE_STATIC \
-  AI_STRIDE_INIT(AI_SHAPE_MAX_DIMENSION, 0)
-
 /*!
  * @struct ai_stride
  * @ingroup ai_platform_interface
@@ -161,23 +173,46 @@ typedef ai_storage_klass ai_stride;
 
 /*!  BASIC_TYPES HANDLERS SECTION         ************************************/
 #define AI_SIZE(value_) \
-  AI_CAST(ai_size, value_)
+  ((ai_size)(value_))
 
 /*!  AI_KLASS_OBJ HANDLERS SECTION         ************************************/
 #define AI_KLASS_OBJ(obj_) \
-  AI_CAST(ai_klass_obj, obj_)
+  ((ai_klass_obj)(obj_))
 
 /*!  GENERIC HANDLERS SECTION              ************************************/
 #define AI_OBJ_DATA(obj_, type_) \
-  AI_CAST(type_, (obj_)->data)
+  ((type_)(obj_)->data)
 
 /*!  AI_BUFFER HANDLERS SECTION            ************************************/
-#define AI_BUFFER_OBJ(ptr_) \
-  AI_CAST(ai_buffer*, ptr_)
+#define AI_BUFFER_OBJ(ptr) \
+  ((ai_buffer*)(ptr))
   
 /*!  AI_ARRAY HANDLERS SECTION             ************************************/
-#define AI_ARRAY_OBJ(ptr_) \
-  AI_CAST(ai_array*, ptr_)
+#define AI_ARRAY_OBJ(ptr) \
+  ((ai_array*)(ptr))
+
+#define AI_ARRAY_OBJ_FMT(array_) \
+  ((ai_array_format)(AI_ARRAY_OBJ(array_)->format))
+
+#define AI_ARRAY_OBJ_SIZE(array_) \
+  (AI_ARRAY_OBJ(array_)->size)
+
+#define AI_ARRAY_OBJ_BYTE_SIZE(array_) \
+  AI_SIZE(AI_ARRAY_GET_BYTE_SIZE(AI_ARRAY_OBJ_FMT(array_), \
+                         AI_ARRAY_OBJ_SIZE(array_)))
+
+#define AI_ARRAY_OBJ_DATA_SIZE(array_) \
+  AI_ARRAY_GET_DATA_BYTE_SIZE(AI_ARRAY_OBJ_FMT(array_), \
+                              AI_ARRAY_OBJ_SIZE(array_))
+
+#define AI_ARRAY_OBJ_DATA(array_, type_) \
+  ((type_*)(AI_ARRAY_OBJ(array_)->data))
+
+#define AI_ARRAY_OBJ_DATA_START(array_, type_) \
+  ((type_*)(AI_ARRAY_OBJ(array_)->data_start))
+
+#define AI_ARRAY_OBJ_ELEM(array_, type_, pos_) \
+  AI_ARRAY_OBJ_DATA(array_, type_)[(pos_)]
 
 #define AI_ARRAY_OBJ_INIT_STATIC(type_, format_, size_, ...) { \
   .format = AI_FMT_OBJ(format_), \
@@ -188,7 +223,7 @@ typedef ai_storage_klass ai_stride;
 
 #define AI_ARRAY_OBJ_INIT(format_, data_, data_start_, size_) { \
   .format = AI_FMT_OBJ(format_), \
-  .size = AI_CAST(ai_array_size, size_), \
+  .size = (ai_array_size)(size_), \
   .data = AI_PTR(data_), \
   .data_start = AI_PTR(data_start_) }
 
@@ -210,18 +245,18 @@ typedef ai_storage_klass ai_stride;
   ((ai_array*)(arrays_ptr_))
 
 #define AI_ARRAY_LIST_FLAGS(list_) \
-  ((list_) ? (list_)->flags : 0x0)
+  ( (list_) ? (list_)->flags : 0x0 )
 
 #define AI_ARRAY_LIST_SIZE(list_) \
-  ((list_) ? (list_)->size : 0)
+  ( (list_) ? (list_)->size : 0 )
 
 #define AI_ARRAY_LIST_DATA(list_, pos_) \
-  ((list_) ? &((list_)->data[pos_]) : NULL)
+  ( (list_) ? &((list_)->data[pos_]) : NULL )
 
 
 /********************************* ai_tensor macros  **************************/
 #define AI_TENSOR_OBJ(obj_) \
-  AI_CAST(ai_tensor*, obj_)
+  ((ai_tensor*)(obj_))
   
 #define AI_TENSOR_INFO_OBJ_INIT(id_, flags_, data_size_) { \
   .id = (id_), \
@@ -244,14 +279,48 @@ typedef ai_storage_klass ai_stride;
                             arrays_size_, AI_PACK(arrays_ptr_), AI_PACK(klass_obj_));
 
 
+#define AI_TENSOR_ARRAY_BYTE_SIZE(t_) \
+    AI_ARRAY_OBJ_BYTE_SIZE(AI_ARRAY_OBJ(t_->data))
+
+#define AI_TENSOR_ARRAY_GET_DATA_ADDR(t_) \
+    AI_HANDLE_PTR(AI_ARRAY_OBJ_DATA_START(t_->data, void))
+
+#define AI_TENSOR_ARRAY_UPDATE_DATA_ADDR(t_, addr_) \
+    { ai_array *arr_ = AI_ARRAY_OBJ(t_->data); \
+      const uintptr_t off_ = (uintptr_t)arr_->data - (uintptr_t)arr_->data_start; \
+      arr_->data_start = AI_PTR(addr_); \
+      arr_->data = AI_PTR((uintptr_t)addr_ + off_); \
+    }
+
+#define AI_TENSOR_INTEGER_GET_SIZE(t_) \
+    ((t_->klass)?(AI_KLASS_GET_INTQ_INFO_LIST(t_))->size:0)
+
+#define AI_TENSOR_INTEGER_GET_SCALE(t_, idx_) \
+    AI_INTQ_INFO_LIST_SCALE(AI_KLASS_GET_INTQ_INFO_LIST(t_), ai_float, idx_)
+
+#define AI_TENSOR_INTEGER_GET_ZEROPOINT_I8(t_, idx_) \
+    AI_INTQ_INFO_LIST_ZEROPOINT(AI_KLASS_GET_INTQ_INFO_LIST(t_), ai_i8, idx_)
+
+#define AI_TENSOR_INTEGER_GET_ZEROPOINT_U8(t_, idx_) \
+    AI_INTQ_INFO_LIST_ZEROPOINT(AI_KLASS_GET_INTQ_INFO_LIST(t_), ai_u8, idx_)
+
+#define AI_TENSOR_FMT_GET_SIGN(t_) \
+    AI_BUFFER_FMT_GET_SIGN(AI_ARRAY_OBJ(t_->data)->format)
+
+#define AI_TENSOR_FMT_GET_BITS(t_) \
+    AI_BUFFER_FMT_GET_BITS(AI_ARRAY_OBJ(t_->data)->format)
+
+#define AI_TENSOR_FMT_GET_FBITS(t_) \
+    AI_BUFFER_FMT_GET_FBITS(AI_ARRAY_OBJ(t_->data)->format)
+
+#define AI_TENSOR_FMT_GET_TYPE(t_) \
+    AI_BUFFER_FMT_GET_TYPE(AI_ARRAY_OBJ(t_->data)->format)
+
 /********************************* TENSOR STATE MACROS  ***********************/
 #define AI_TENSOR_STATE_OBJ_INIT(end_ptr_ , curr_ptr_, stride_, size_) \
   { (end_ptr_), (curr_ptr_), (stride_), (size_) }
 
 /********************************* TENSOR LIST MACROS  ************************/
-#if (AI_TOOLS_API_VERSION <= AI_TOOLS_API_VERSION_1_3)
-#pragma message ("Including deprecated AI_TENSOR_LIST_ENTRY, AI_TENSOR_LIST_EMPTY, AI_TENSOR_LIST_IO_ENTRY")
-
 AI_DEPRECATED
 #define AI_TENSOR_LIST_EMPTY \
   AI_TENSOR_LIST_OBJ_EMPTY
@@ -259,12 +328,6 @@ AI_DEPRECATED
 AI_DEPRECATED
 #define AI_TENSOR_LIST_ENTRY(...) \
   AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, AI_NUMARGS(__VA_ARGS__), __VA_ARGS__)
-
-AI_DEPRECATED
-#define AI_TENSOR_LIST_IO_ENTRY(flags_, size_, ...) \
-  AI_TENSOR_LIST_IO_OBJ_INIT(flags_, size_, __VA_ARGS__)
-
-#endif    /* AI_TOOLS_API_VERSION_1_3 */
 
 #define AI_TENSOR_LIST_OBJ_INIT(flags_, size_, ...) \
   { .size = (size_), .flags = (flags_), \
@@ -282,14 +345,17 @@ AI_DEPRECATED
     flags_, size_, __VA_ARGS__);
 
 /********************************* TENSOR LIST I/O MACROS  ********************/
+AI_DEPRECATED
+#define AI_TENSOR_LIST_IO_ENTRY(flags_, size_, ...) \
+  AI_TENSOR_LIST_IO_OBJ_INIT(flags_, size_, __VA_ARGS__)
 
 #define AI_TENSOR_LIST_IO_OBJ_INIT(flags_, size_, ...) \
   { .size = (size_), .flags = (flags_), \
     .tensor = (ai_tensor*[]) { __VA_ARGS__ }, \
     .info = (ai_tensor_list_info[1]) { { \
-              .buffer = (ai_buffer[size_]){AI_STRUCT_INIT}, \
-              .state  = (ai_tensor_state[size_]){AI_STRUCT_INIT}, \
-              .meta   = (ai_buffer_meta_info[size_]){AI_STRUCT_INIT} \
+              .buffer = (ai_buffer[size_])AI_STRUCT_INIT, \
+              .state  = (ai_tensor_state[size_])AI_STRUCT_INIT, \
+              .meta   = (ai_buffer_meta_info[size_])AI_STRUCT_INIT \
              } } \
   }
 
@@ -320,8 +386,6 @@ AI_DEPRECATED
   ((ai_network*)(obj_))
 
 
-#if (AI_TOOLS_API_VERSION <= AI_TOOLS_API_VERSION_1_4)
-AI_DEPRECATED
 #define AI_NETWORK_OBJ_INIT( \
       weights_buffer_, activations_buffer_, \
       in_tensor_list_ptr_, out_tensor_list_ptr_, \
@@ -333,9 +397,8 @@ AI_DEPRECATED
   .error = AI_ERROR_INIT(NONE, NONE), \
   .n_batches = 0, \
   .batch_id = 0, \
-  .buffers = AI_NETWORK_BUFFERS_INIT( \
-              AI_BUFFER_ARRAY_OBJ_INIT_STATIC(0x0, 1, AI_PACK(weights_buffer_)), \
-              AI_BUFFER_ARRAY_OBJ_INIT_STATIC(0x0, 1, AI_PACK(activations_buffer_))), \
+  .params = weights_buffer_, \
+  .activations = activations_buffer_, \
   .tensors = AI_TENSOR_CHAIN_IO_OBJ_INIT(AI_FLAG_NONE, \
                                          AI_PACK(in_tensor_list_ptr_), \
                                          AI_PACK(out_tensor_list_ptr_)), \
@@ -344,33 +407,6 @@ AI_DEPRECATED
   .on_node_exec = NULL, \
   .data_exec = NULL, \
 }
-
-#else
-
-#define AI_NETWORK_OBJ_INIT( \
-      weights_buffer_, activations_buffer_, \
-      in_tensor_list_ptr_, out_tensor_list_ptr_, \
-      in_node_ptr_, signature_, klass_obj_) { \
-  .magic = 0x0, \
-  .signature = signature_, \
-  .klass = AI_KLASS_OBJ(klass_obj_), \
-  .flags = AI_FLAG_NONE, \
-  .error = AI_ERROR_INIT(NONE, NONE), \
-  .n_batches = 0, \
-  .batch_id = 0, \
-  .buffers = AI_NETWORK_BUFFERS_INIT(AI_PACK(weights_buffer_), \
-                                     AI_PACK(activations_buffer_)), \
-  .tensors = AI_TENSOR_CHAIN_IO_OBJ_INIT(AI_FLAG_NONE, \
-                                         AI_PACK(in_tensor_list_ptr_), \
-                                         AI_PACK(out_tensor_list_ptr_)), \
-  .input_node = AI_NODE_OBJ(in_node_ptr_), \
-  .current_node = AI_NODE_OBJ(NULL), \
-  .on_node_exec = NULL, \
-  .data_exec = NULL, \
-}
-
-#endif    // AI_TOOLS_API_VERSION
-
 
 #define AI_NETWORK_OBJ_DECLARE( \
       name_, attr_, \
@@ -390,13 +426,6 @@ AI_DEPRECATED
 
 /******************************************************************************/
 AI_API_DECLARE_BEGIN
-
-/*!
- * @typedef ai_version
- * @ingroup ai_platform_interface
- * @brief Packed representation for @ref ai_platform_version 
- */
-typedef uint32_t ai_version;
 
 /*!
  * @typedef ai_klass_obj
@@ -440,28 +469,6 @@ typedef uint32_t ai_flags;
  */
 typedef uint32_t ai_magic;
 
-/*!
- * @typedef ai_any_ptr
- * @ingroup ai_platform_interface
- * @brief union for defining any pointer
- */
-typedef union {
-  ai_handle     handle;
-  ai_ptr        ptr;
-  ai_float*     float32;
-  ai_double*    float64;
-  ai_u8*        u8;
-  ai_i8*        s8;
-  ai_u16*       u16;
-  ai_i16*       s16;
-  ai_u32*       u32;
-  ai_i32*       s32;
-  ai_u64*       u64;
-  ai_i64*       s64;
-} ai_any_ptr;
-
-#define AI_ANY_PTR_INIT(ptr_) \
-  { .handle = (ai_handle)(ptr_) }
 
 #define AI_CONTEXT_FIELDS \
   ai_magic     magic;  /*!< magic word to mark valid contexts datastructs*/ \
@@ -548,11 +555,11 @@ AI_PACKED_STRUCT_END
  */
 AI_PACKED_STRUCT_START
 typedef AI_ALIGNED_TYPE(struct, 4) AI_PACKED ai_tensor_s {
-  ai_klass_obj    klass;  /*!< opaque pointer to klass context */
-  ai_tensor_info  info; /*!< tensor info metadata see @ref ai_tensor_info)*/
-  ai_shape        shape;   /*!< tensor shape see @ref ai_shape */
-  ai_stride       stride; /*!< tensor stride see @ref ai_stride */
-  ai_array*       data;   /*!< flattened array pointer to tensor data */
+  ai_klass_obj klass;  /*!< opaque pointer to klass context */
+  ai_tensor_info info; /*!< tensor info metadata see @ref ai_tensor_info)*/
+  ai_shape shape;   /*!< tensor shape see @ref ai_shape */
+  ai_stride stride; /*!< tensor stride see @ref ai_stride */
+  ai_array*     data;   /*!< flattened array pointer to tensor data */
 } ai_tensor;
 AI_PACKED_STRUCT_END
 
@@ -670,21 +677,10 @@ typedef AI_ALIGNED_TYPE(struct, 4) AI_PACKED ai_tensor_chain_s {
 } ai_tensor_chain;
 AI_PACKED_STRUCT_END
 
-/************************************** LAYER DATATYPES     *******************/
-
-/*!
- * @struct ai_layer
- * @ingroup ai_platform_interface
- * @brief Structure encoding a generic opaque layer in the network
- *
- */
-typedef void             ai_layer;
-
-
-/************************************** OBSERVER DATATYPES  *******************/
-
 /* forward function */
 struct ai_node_s;
+
+/************************************** OBSERVER DATATYPES  *******************/
 
 /*!
  * @struct ai_observer_node
@@ -755,25 +751,23 @@ typedef ai_u32 (*ai_node_exec_cb)(
 AI_PACKED_STRUCT_START
 typedef AI_ALIGNED_TYPE(struct, 4) AI_PACKED ai_network_s {
   AI_CONTEXT_FIELDS
-  ai_klass_obj        klass; /*!< opaque handler to specific network implementations */
-  ai_flags            flags; /*!< bitflags mask to track some network state info */
-  ai_error            error; /*!< track 1st error code in the network */
+  ai_klass_obj klass; /*!< opaque handler to specific network implementations */
+  ai_flags   flags; /*!< bitflags mask to track some network state info */
+  ai_error   error; /*!< track 1st error code in the network */
 
-  ai_u16              n_batches;     /*!< number of batches to process */
-  ai_u16              batch_id;      /*!< current batch to to process btw [0, n_batches)*/
-  
-  // New 6.1 context storing explicitly network buffers. This allow also management of network persistent state now
-  ai_network_buffers  buffers;     /*!< network buffers datastruct */
+  ai_u16     n_batches;     /*!< number of batches to process */
+  ai_u16     batch_id;      /*!< current batch to to process btw [0, n_batches)*/
+  ai_buffer  params;        /*!< params buffer data */
+  ai_buffer  activations;   /*!< activations buffer data */
 
-  ai_tensor_chain     tensors;     /*!< I/O tensor chain list see @ref ai_tensor_list */
+  ai_tensor_chain tensors;     /*!< I/O tensor chain list see @ref ai_tensor_list */
 
-  struct ai_node_s*   input_node; /*!< first node to execute */
-  struct ai_node_s*   current_node;  /*!< current node to execute */
+  struct ai_node_s* input_node; /*!< first node to execute */
+  struct ai_node_s* current_node;  /*!< current node to execute */
 
-  ai_node_exec_cb     on_node_exec; /*!< registered call-back function called when
+  ai_node_exec_cb  on_node_exec; /*!< registered call-back function called when
                                       a node/operator is scheduled */
-  ai_handle           data_exec;         /*!< private reference for the runtime context */
-  ai_version          tool_api_version;  /*! Tools Codegen API version */
+  ai_handle        data_exec;    /*!< private reference for the runtime context */
 } ai_network;
 AI_PACKED_STRUCT_END
 
@@ -809,10 +803,6 @@ ai_platform_version ai_platform_api_get_version(void);
 AI_INTERFACE_TYPE
 ai_platform_version ai_platform_interface_api_get_version(void);
 
-
-/****************************************************************************
- ** Context APIs
- ****************************************************************************/
 /*!
  * @brief Get platform context.
  * @ingroup ai_platform_interface
@@ -830,50 +820,6 @@ AI_INTERFACE_TYPE
 ai_handle ai_platform_context_release(ai_context* ctx);
 
 
-/****************************************************************************
- ** Platform Network Params APIs
- ****************************************************************************/
-/*!
- * @brief get the weights map from user provided network params info
- * @ingroup ai_platform_interface
- * @param params a pointer to ai_network_params struct
- * @param map table pointer to the table map to initialize
- * @param map_size the number of entries of the table to initialize
- * @return true if initialization succeeded, false otherwise
- */
-AI_INTERFACE_TYPE
-ai_bool ai_platform_get_weights_map(
-  ai_ptr* map, const ai_size map_size, const ai_network_params* params);
-
-/*!
- * @brief get the activations map from user provided network params info
- * @ingroup ai_platform_interface
- * @param params a pointer to ai_network_params struct
- * @param map table pointer to the table map to initialize
- * @param map_size the number of entries of the table to initialize
- * @return true if initialization succeeded, false otherwise
- */
-AI_INTERFACE_TYPE
-ai_bool ai_platform_get_activations_map(
-  ai_ptr* map, const ai_size map_size, const ai_network_params* params);
-
-/*!
- * @brief bind code generated weights and activations map arrays to ai_netwoek_params 
- * @ingroup ai_platform_interface
- * @param[in] network opaque handler to network context
- * @param[out] params the network params struct reporting binded params
- * @param[in] map_weights pointer to the codegened weights map array to be bound
- * @param[in] map_activations pointer to the codegened activation map array to be bound
- * @return true if network parameters binding succeed, false otherwise
- */
-AI_INTERFACE_TYPE
-ai_bool ai_platform_bind_network_params(
-  ai_handle network, ai_network_params* params,
-  const ai_buffer_array* map_weights, const ai_buffer_array* map_activations);
-
-/****************************************************************************
- ** Platform Network APIs
- ****************************************************************************/
 /*!
  * @brief get **first** error tracked when using the network
  * @ingroup ai_platform_interface
@@ -913,16 +859,16 @@ ai_bool ai_platform_api_get_network_report(
  * @param a pointer to an opaque handle of the network context
  * @param an (optional) pointer to the network config buffer info
  * @param net_ctx a pointer to the network context structure to initialize
- * @param tool_major major version id of the tool used to generate the network
- * @param tool_minor minor version id of the tool used to generate the network
- * @param tool_micro micro version id of the tool used to generate the network
+ * @param tools_major major version id of the tool used to generate the network
+ * @param tools_minor minor version id of the tool used to generate the network
+ * @param tools_micro micro version id of the tool used to generate the network
  * @return the error during network creation or error none if ok  
  */
 AI_INTERFACE_TYPE
 ai_error ai_platform_network_create(
   ai_handle* network, const ai_buffer* network_config,
   ai_network* net_ctx,
-  const ai_u8 tool_major, const ai_u8 tool_minor, const ai_u8 tool_micro);
+  const ai_u8 tools_major, const ai_u8 tools_minor, const ai_u8 tools_micro);
 
 /*!
  * @brief destroy a network context
@@ -965,10 +911,6 @@ AI_INTERFACE_TYPE
 ai_i32 ai_platform_network_process(
   ai_handle network, const ai_buffer* input, ai_buffer* output);
 
-/****************************************************************************
- ** Observer APIs
- ****************************************************************************/
-
 /*!
  * @brief Return the info of a requested c-node (defined by the
  *        c_idx field). Should be called after the initialization phase.
@@ -1001,10 +943,6 @@ ai_bool ai_platform_observer_register(
     ai_handle cookie,
     ai_u32 flags);
 
-AI_INTERFACE_TYPE
-ai_bool ai_platform_observer_register_s(ai_handle network,
-    ai_observer_exec_ctx *ctx);
-
 /*!
  * @brief un-register the observer context.
  * @ingroup ai_platform_observer
@@ -1019,10 +957,7 @@ AI_INTERFACE_TYPE
 ai_bool ai_platform_observer_unregister(ai_handle network,
     ai_observer_node_cb cb, ai_handle cookie);
 
-AI_INTERFACE_TYPE
-ai_bool ai_platform_observer_unregister_s(ai_handle network,
-    ai_observer_exec_ctx *ctx);
 
 AI_API_DECLARE_END
 
-#endif /*AI_PLATFORM_INTERFACE_H*/
+#endif /*__AI_PLATFORM_INTERFACE_H__*/
