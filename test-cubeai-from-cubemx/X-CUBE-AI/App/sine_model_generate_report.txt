@@ -1,15 +1,15 @@
 Neural Network Tools for STM32 v1.3.0 (AI tools v5.1.0)
-Created date       : 2021-12-14 21:02:39
-Parameters         : generate --name sine_model -m /home/pierre/Téléchargements/sine_model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace641268377113614148320217494078954 --output /home/pierre/.stm32cubemx/stm32ai_output
+Created date       : 2021-12-16 11:25:13
+Parameters         : generate --name sine_model -m /home/pierre/Téléchargements/sine_model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace39704809398914670803710554172790 --output /home/pierre/.stm32cubemx/stm32ai_output
 
-Exec/report summary (generate dur=0.32s err=0)
+Exec/report summary (generate dur=0.33s err=0)
 ------------------------------------------------------------------------------------------------------------------------
 model file         : /home/pierre/Téléchargements/sine_model.tflite
 type               : tflite (tflite) 
 c_name             : sine_model
 compression        : None
 quantize           : None
-workspace dir      : /tmp/mxAI_workspace641268377113614148320217494078954
+workspace dir      : /tmp/mxAI_workspace39704809398914670803710554172790
 output dir         : /home/pierre/.stm32cubemx/stm32ai_output
 
 model_name         : sine_model

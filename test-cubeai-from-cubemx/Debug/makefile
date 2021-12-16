@@ -71,7 +71,7 @@ main-build: test-cubeai-from-cubemx.elf secondary-outputs
 
 # Tool invocations
 test-cubeai-from-cubemx.elf: $(OBJS) $(USER_OBJS) /home/pierre/ToneCrafter/test-cubeai-from-cubemx/STM32F746NGHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "test-cubeai-from-cubemx.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/pierre/ToneCrafter/test-cubeai-from-cubemx/STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="test-cubeai-from-cubemx.map" -Wl,--gc-sections -static -L../Middlewares/ST/AI/Lib --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "test-cubeai-from-cubemx.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/pierre/ToneCrafter/test-cubeai-from-cubemx/STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="test-cubeai-from-cubemx.map" -Wl,--gc-sections -static -L../Middlewares/ST/AI/Lib -u_printf_float --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

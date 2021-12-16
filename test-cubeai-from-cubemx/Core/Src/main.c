@@ -85,6 +85,8 @@ UART_HandleTypeDef huart6;
 
 SDRAM_HandleTypeDef hsdram1;
 
+float test = 0.0f;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -174,10 +176,10 @@ int main(void)
   /* USER CODE END 1 */
 
   /* Enable I-Cache---------------------------------------------------------*/
-  //SCB_EnableICache();
+  SCB_EnableICache();
 
   /* Enable D-Cache---------------------------------------------------------*/
-  //SCB_EnableDCache();
+  SCB_EnableDCache();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -197,7 +199,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-//  MX_ADC3_Init();
+  MX_ADC3_Init();
   MX_CRC_Init();
 //  MX_DCMI_Init();
 //  MX_DMA2D_Init();
@@ -217,7 +219,7 @@ int main(void)
 //  MX_TIM5_Init();
 //  MX_TIM8_Init();
   MX_TIM12_Init();
-//  MX_USART1_UART_Init();
+  MX_USART1_UART_Init();
   MX_USART6_UART_Init();
 //  MX_FATFS_Init();
 //  MX_USB_HOST_Init();
@@ -254,7 +256,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    //MX_USB_HOST_Process();
+    MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
     LED_Toggle();
@@ -263,8 +265,9 @@ int main(void)
     // Fill input buffer (use test value)
 	for (uint32_t i = 0; i < AI_SINE_MODEL_IN_1_SIZE; i++)
 	{
-	  ((ai_float *)in_data)[i] = (ai_float)2.0f;
+	  ((ai_float *)in_data)[i] = (ai_float)test;
 	}
+	test += 0.1;
 
 	// Get current timestamp
 	timestamp = htim12.Instance->CNT;
@@ -523,6 +526,7 @@ static void MX_DMA2D_Init(void)
   /* USER CODE BEGIN DMA2D_Init 2 */
 
   /* USER CODE END DMA2D_Init 2 */
+
 }
 
 /**
@@ -1636,27 +1640,6 @@ void LED_Toggle(){
 }
 
 /* USER CODE END 4 */
-
-/**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM6 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM6) {
-    HAL_IncTick();
-  }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
-}
 
 /**
   * @brief  This function is executed in case of error occurrence.
