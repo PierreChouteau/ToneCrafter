@@ -1,0 +1,123 @@
+Neural Network Tools for STM32 v1.3.0 (AI tools v5.1.0)
+Created date       : 2022-01-05 11:17:07
+Parameters         : generate --name chatbot -m /home/pierre/Téléchargements/chatbot (1).h5 --type keras --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace902164237420614932254555258341705 --output /home/pierre/.stm32cubemx/stm32ai_output
+
+Exec/report summary (generate dur=0.49s err=0)
+------------------------------------------------------------------------------------------------------------------------
+model file         : /home/pierre/Téléchargements/chatbot (1).h5
+type               : keras (keras_dump) - tf.keras 2.2.4-tf
+c_name             : chatbot
+compression        : None
+quantize           : None
+workspace dir      : /tmp/mxAI_workspace902164237420614932254555258341705
+output dir         : /home/pierre/.stm32cubemx/stm32ai_output
+
+model_name         : chatbot_1
+model_hash         : e4fff005384b7a49f46ea08b45822007
+input              : input_0 [51 items, 204 B, ai_float, FLOAT32, (51,)]
+inputs (total)     : 204 B
+output             : dense_2_nl [6 items, 24 B, ai_float, FLOAT32, (6,)]
+outputs (total)    : 24 B
+params #           : 15,302 items (59.77 KiB)
+macc               : 15,386
+weights (ro)       : 61,208 B (59.77 KiB) 
+activations (rw)   : 768 B (768 B) 
+ram (total)        : 996 B (996 B) = 768 + 204 + 24
+
+------------------------------------------------------------------------------------------------------------------------
+id  layer (type)              output shape      param #     connected to             macc           rom                
+------------------------------------------------------------------------------------------------------------------------
+0   input_0 (Input)           (51,)                                                                                    
+    dense (Dense)             (128,)            6,656       input_0                  6,528          26,624             
+    dense_nl (Nonlinearity)   (128,)                        dense                    128                               
+------------------------------------------------------------------------------------------------------------------------
+1   dense_1 (Dense)           (64,)             8,256       dense_nl                 8,192          33,024             
+    dense_1_nl (Nonlinearity) (64,)                         dense_1                  64                                
+------------------------------------------------------------------------------------------------------------------------
+2   dense_2 (Dense)           (6,)              390         dense_1_nl               384            1,560              
+    dense_2_nl (Nonlinearity) (6,)                          dense_2                  90                                
+------------------------------------------------------------------------------------------------------------------------
+chatbot_1 p=15302(59.77 KBytes) macc=15386 rom=59.77 KBytes ram=768 B io_ram=228 B
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name         : chatbot_1
+c-name             : chatbot
+c-node #           : 6
+c-array #          : 13
+activations size   : 768
+weights size       : 61208
+macc               : 15386
+inputs             : ['input_0_output_array']
+outputs            : ['dense_2_nl_output_array']
+
+
+C-Arrays (13)
+------------------------------------------------------------------------------------------------------------------------
+c_id  name (*_array)     item/size           mem-pool     c-type       fmt    comment            
+------------------------------------------------------------------------------------------------------------------------
+0     dense_2_bias       6/24                weights      const float  float                     
+1     dense_2_weights    384/1536            weights      const float  float                     
+2     dense_1_bias       64/256              weights      const float  float                     
+3     dense_1_weights    8192/32768          weights      const float  float                     
+4     dense_bias         128/512             weights      const float  float                     
+5     dense_weights      6528/26112          weights      const float  float                     
+6     input_0_output     51/204              user         float        float  /input             
+7     dense_output       128/512             activations  float        float                     
+8     dense_nl_output    128/512             activations  float        float                     
+9     dense_1_output     64/256              activations  float        float                     
+10    dense_1_nl_output  64/256              activations  float        float                     
+11    dense_2_output     6/24                activations  float        float                     
+12    dense_2_nl_output  6/24                user         float        float  /output            
+------------------------------------------------------------------------------------------------------------------------
+
+
+C-Layers (6)
+------------------------------------------------------------------------------------------------------------------------
+c_id  name (*_layer)  id  type   macc        rom         tensors               shape (array id)                       
+------------------------------------------------------------------------------------------------------------------------
+0     dense           0   dense  6528        26624       I: input_0_output     [1, 1, 1, 51] (6)                      
+                                                         W: dense_weights                                             
+                                                         W: dense_bias                                                
+                                                         O: dense_output       [1, 1, 1, 128] (7)                     
+------------------------------------------------------------------------------------------------------------------------
+1     dense_nl        0   nl     128         0           I: dense_output       [1, 1, 1, 128] (7)                     
+                                                         O: dense_nl_output    [1, 1, 1, 128] (8)                     
+------------------------------------------------------------------------------------------------------------------------
+2     dense_1         1   dense  8192        33024       I: dense_nl_output    [1, 1, 1, 128] (8)                     
+                                                         W: dense_1_weights                                           
+                                                         W: dense_1_bias                                              
+                                                         O: dense_1_output     [1, 1, 1, 64] (9)                      
+------------------------------------------------------------------------------------------------------------------------
+3     dense_1_nl      1   nl     64          0           I: dense_1_output     [1, 1, 1, 64] (9)                      
+                                                         O: dense_1_nl_output  [1, 1, 1, 64] (10)                     
+------------------------------------------------------------------------------------------------------------------------
+4     dense_2         2   dense  384         1560        I: dense_1_nl_output  [1, 1, 1, 64] (10)                     
+                                                         W: dense_2_weights                                           
+                                                         W: dense_2_bias                                              
+                                                         O: dense_2_output     [1, 1, 1, 6] (11)                      
+------------------------------------------------------------------------------------------------------------------------
+5     dense_2_nl      2   nl     90          0           I: dense_2_output     [1, 1, 1, 6] (11)                      
+                                                         O: dense_2_nl_output  [1, 1, 1, 6] (12)                      
+------------------------------------------------------------------------------------------------------------------------
+
+
+ 
+Complexity per-layer - macc=15,386 rom=61,208
+------------------------------------------------------------------------------------------------------------------------
+id      layer (type)              macc                                    rom                                    
+------------------------------------------------------------------------------------------------------------------------
+0       dense (Dense)             ||||||||||||||||||||||||         42.4%  |||||||||||||||||||||||||        43.5% 
+0       dense_nl (Nonlinearity)   |                                 0.8%  |                                 0.0% 
+1       dense_1 (Dense)           |||||||||||||||||||||||||||||||  53.2%  |||||||||||||||||||||||||||||||  54.0% 
+1       dense_1_nl (Nonlinearity) |                                 0.4%  |                                 0.0% 
+2       dense_2 (Dense)           ||                                2.5%  ||                                2.5% 
+2       dense_2_nl (Nonlinearity) |                                 0.6%  |                                 0.0% 
+------------------------------------------------------------------------------------------------------------------------
+
+
+Evaluation report (summary)
+------------------------------------------------------------
+NOT EVALUATED

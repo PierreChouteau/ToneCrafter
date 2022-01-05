@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    sine_model_data.h
+  * @file    chatbot_data.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Wed Jan  5 11:17:00 2022
+  * @date    Wed Jan  5 11:17:07 2022
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -18,28 +18,28 @@
   ******************************************************************************
   */
 
-#ifndef __SINE_MODEL_DATA_H_
-#define __SINE_MODEL_DATA_H_
+#ifndef __CHATBOT_DATA_H_
+#define __CHATBOT_DATA_H_
 #pragma once
 
 #include "ai_platform.h"
 
-#define AI_SINE_MODEL_DATA_CONFIG           AI_HANDLE_NULL
+#define AI_CHATBOT_DATA_CONFIG           AI_HANDLE_NULL
 
-#define AI_SINE_MODEL_DATA_ACTIVATIONS_SIZE     (128)
+#define AI_CHATBOT_DATA_ACTIVATIONS_SIZE     (768)
 
-#define AI_SINE_MODEL_DATA_WEIGHTS_SIZE         (1284)
+#define AI_CHATBOT_DATA_WEIGHTS_SIZE         (61208)
 
-#define AI_SINE_MODEL_DATA_ACTIVATIONS(ptr_)  \
+#define AI_CHATBOT_DATA_ACTIVATIONS(ptr_)  \
   AI_BUFFER_OBJ_INIT( \
     AI_BUFFER_FORMAT_U8, \
-    1, 1, AI_SINE_MODEL_DATA_ACTIVATIONS_SIZE, 1, \
+    1, 1, AI_CHATBOT_DATA_ACTIVATIONS_SIZE, 1, \
     AI_HANDLE_PTR(ptr_) )
 
-#define AI_SINE_MODEL_DATA_WEIGHTS(ptr_)  \
+#define AI_CHATBOT_DATA_WEIGHTS(ptr_)  \
   AI_BUFFER_OBJ_INIT( \
     AI_BUFFER_FORMAT_U8|AI_BUFFER_FMT_FLAG_CONST, \
-    1, 1, AI_SINE_MODEL_DATA_WEIGHTS_SIZE, 1, \
+    1, 1, AI_CHATBOT_DATA_WEIGHTS_SIZE, 1, \
     AI_HANDLE_PTR(ptr_) )
 
 
@@ -47,14 +47,14 @@ AI_API_DECLARE_BEGIN
 
 /*!
  * @brief Get network weights array pointer as a handle ptr.
- * @ingroup sine_model_data
+ * @ingroup chatbot_data
  * @return a ai_handle pointer to the weights array
  */
 AI_API_ENTRY
-ai_handle ai_sine_model_data_weights_get(void);
+ai_handle ai_chatbot_data_weights_get(void);
 
 
 AI_API_DECLARE_END
 
-#endif /* __SINE_MODEL_DATA_H_ */
+#endif /* __CHATBOT_DATA_H_ */
 

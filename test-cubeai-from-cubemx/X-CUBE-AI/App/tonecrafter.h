@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    sine_model.h
+  * @file    tonecrafter.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Wed Jan  5 11:17:00 2022
+  * @date    Wed Jan  5 11:17:03 2022
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -18,44 +18,44 @@
   ******************************************************************************
   */
 
-#ifndef __AI_SINE_MODEL_H__
-#define __AI_SINE_MODEL_H__
+#ifndef __AI_TONECRAFTER_H__
+#define __AI_TONECRAFTER_H__
 #pragma once
 
 #include "ai_platform.h"
 #include "ai_platform_interface.h"
 
-#define AI_SINE_MODEL_MODEL_NAME          "sine_model"
+#define AI_TONECRAFTER_MODEL_NAME          "tonecrafter"
 
-#define AI_SINE_MODEL_IN_NUM       (1)
-#define AI_SINE_MODEL_IN { \
+#define AI_TONECRAFTER_IN_NUM       (1)
+#define AI_TONECRAFTER_IN { \
+  AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 120, 1, 1, 1, NULL), \
+}
+#define AI_TONECRAFTER_IN_SIZE { \
+  (120 * 1 * 1), \
+}
+#define AI_TONECRAFTER_IN_1_SIZE  (120 * 1 * 1)
+#define AI_TONECRAFTER_IN_1_SIZE_BYTES  ((120 * 1 * 1) * 4)
+
+
+
+
+#define AI_TONECRAFTER_OUT_NUM      (1)
+#define AI_TONECRAFTER_OUT { \
   AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 1, 1, 1, 1, NULL), \
 }
-#define AI_SINE_MODEL_IN_SIZE { \
+#define AI_TONECRAFTER_OUT_SIZE { \
   (1 * 1 * 1), \
 }
-#define AI_SINE_MODEL_IN_1_SIZE  (1 * 1 * 1)
-#define AI_SINE_MODEL_IN_1_SIZE_BYTES  ((1 * 1 * 1) * 4)
+#define AI_TONECRAFTER_OUT_1_SIZE  (1 * 1 * 1)
+#define AI_TONECRAFTER_OUT_1_SIZE_BYTES  ((1 * 1 * 1) * 4)
 
-
-
-
-#define AI_SINE_MODEL_OUT_NUM      (1)
-#define AI_SINE_MODEL_OUT { \
-  AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 1, 1, 1, 1, NULL), \
-}
-#define AI_SINE_MODEL_OUT_SIZE { \
-  (1 * 1 * 1), \
-}
-#define AI_SINE_MODEL_OUT_1_SIZE  (1 * 1 * 1)
-#define AI_SINE_MODEL_OUT_1_SIZE_BYTES  ((1 * 1 * 1) * 4)
-
-#define AI_SINE_MODEL_N_NODES (5)
+#define AI_TONECRAFTER_N_NODES (4)
 
 AI_API_DECLARE_BEGIN
 
 /*!
- * @defgroup sine_model
+ * @defgroup tonecrafter
  * @brief Public neural network APIs
  * @details This is the header for the network public APIs declarations
  * for interfacing a generated network model.
@@ -74,18 +74,18 @@ AI_API_DECLARE_BEGIN
 
 /*!
  * @brief Get network library info as a datastruct.
- * @ingroup sine_model
+ * @ingroup tonecrafter
  * @param[out] report a pointer to the report struct where to
  * store network info. See @ref ai_network_report struct for details
  * @return a boolean reporting the exit status of the API
  */
 AI_API_ENTRY
-ai_bool ai_sine_model_get_info(
+ai_bool ai_tonecrafter_get_info(
   ai_handle network, ai_network_report* report);
 
 /*!
  * @brief Get first network error code.
- * @ingroup sine_model
+ * @ingroup tonecrafter
  * @details Get an error code related to the 1st error generated during
  * network processing. The error code is structure containing an 
  * error type indicating the type of error with an associated error code
@@ -95,11 +95,11 @@ ai_bool ai_sine_model_get_info(
  * see @ref ai_error for struct definition
  */
 AI_API_ENTRY
-ai_error ai_sine_model_get_error(ai_handle network);
+ai_error ai_tonecrafter_get_error(ai_handle network);
 
 /*!
  * @brief Create a neural network.
- * @ingroup sine_model
+ * @ingroup tonecrafter
  * @details Instantiate a network and returns an object to handle it;
  * @param network an opaque handle to the network context
  * @param network_config a pointer to the network configuration info coded as a 
@@ -107,12 +107,12 @@ ai_error ai_sine_model_get_error(ai_handle network);
  * @return an error code reporting the status of the API on exit
  */
 AI_API_ENTRY
-ai_error ai_sine_model_create(
+ai_error ai_tonecrafter_create(
   ai_handle* network, const ai_buffer* network_config);
 
 /*!
  * @brief Destroy a neural network and frees the allocated memory.
- * @ingroup sine_model
+ * @ingroup tonecrafter
  * @details Destroys the network and frees its memory. The network handle is returned;
  * if the handle is not NULL, the unloading has not been successful.
  * @param network an opaque handle to the network context
@@ -120,13 +120,13 @@ ai_error ai_sine_model_create(
  * correctly. The same input network handle if destroy failed.
  */
 AI_API_ENTRY
-ai_handle ai_sine_model_destroy(ai_handle network);
+ai_handle ai_tonecrafter_destroy(ai_handle network);
 
 /*!
  * @brief Initialize the data structures of the network.
- * @ingroup sine_model
+ * @ingroup tonecrafter
  * @details This API initialized the network after a successfull
- * @ref ai_sine_model_create. Both the activations memory buffer 
+ * @ref ai_tonecrafter_create. Both the activations memory buffer 
  * and params (i.e. weights) need to be provided by caller application
  * 
  * @param network an opaque handle to the network context
@@ -134,36 +134,36 @@ ai_handle ai_sine_model_destroy(ai_handle network);
  * see @ref ai_network_params struct for details
  * @return true if the network was correctly initialized, false otherwise
  * in case of error the error type could be queried by 
- * using @ref ai_sine_model_get_error
+ * using @ref ai_tonecrafter_get_error
  */
 AI_API_ENTRY
-ai_bool ai_sine_model_init(
+ai_bool ai_tonecrafter_init(
   ai_handle network, const ai_network_params* params);
 
 
 /*!
  * @brief Run the network and return the output
- * @ingroup sine_model
+ * @ingroup tonecrafter
  *
  * @details Runs the network on the inputs and returns the corresponding output.
  * The size of the input and output buffers is stored in this
- * header generated by the code generation tool. See AI_SINE_MODEL_*
- * defines into file @ref sine_model.h for all network sizes defines
+ * header generated by the code generation tool. See AI_TONECRAFTER_*
+ * defines into file @ref tonecrafter.h for all network sizes defines
  *
  * @param network an opaque handle to the network context
  * @param[in] input buffer with the input data
  * @param[out] output buffer with the output data
  * @return the number of input batches processed (default 1) or <= 0 if it fails
  * in case of error the error type could be queried by 
- * using @ref ai_sine_model_get_error
+ * using @ref ai_tonecrafter_get_error
  */
 AI_API_ENTRY
-ai_i32 ai_sine_model_run(
+ai_i32 ai_tonecrafter_run(
   ai_handle network, const ai_buffer* input, ai_buffer* output);
 
 /*!
  * @brief Runs the network on the inputs.
- * @ingroup sine_model
+ * @ingroup tonecrafter
  *
  * @details Differently from @ref ai_network_run, no output is returned, e.g. for
  * temporal models with a fixed step size.
@@ -172,12 +172,12 @@ ai_i32 ai_sine_model_run(
  * @param[in] input buffer with the input data
  * @return the number of input batches processed (usually 1) or <= 0 if it fails
  * in case of error the error type could be queried by 
- * using @ref ai_sine_model_get_error
+ * using @ref ai_tonecrafter_get_error
  */
 AI_API_ENTRY
-ai_i32 ai_sine_model_forward(
+ai_i32 ai_tonecrafter_forward(
   ai_handle network, const ai_buffer* input);
 
 AI_API_DECLARE_END
 
-#endif /*__AI_SINE_MODEL_H__*/
+#endif /*__AI_TONECRAFTER_H__*/

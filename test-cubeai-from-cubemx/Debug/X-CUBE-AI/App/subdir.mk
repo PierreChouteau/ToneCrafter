@@ -6,15 +6,27 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../X-CUBE-AI/App/sine_model.c \
-../X-CUBE-AI/App/sine_model_data.c 
+../X-CUBE-AI/App/sine_model_1641213730071.c \
+../X-CUBE-AI/App/sine_model_1641213730071_data.c \
+../X-CUBE-AI/App/sine_model_data.c \
+../X-CUBE-AI/App/tonecrafter.c \
+../X-CUBE-AI/App/tonecrafter_data.c 
 
 OBJS += \
 ./X-CUBE-AI/App/sine_model.o \
-./X-CUBE-AI/App/sine_model_data.o 
+./X-CUBE-AI/App/sine_model_1641213730071.o \
+./X-CUBE-AI/App/sine_model_1641213730071_data.o \
+./X-CUBE-AI/App/sine_model_data.o \
+./X-CUBE-AI/App/tonecrafter.o \
+./X-CUBE-AI/App/tonecrafter_data.o 
 
 C_DEPS += \
 ./X-CUBE-AI/App/sine_model.d \
-./X-CUBE-AI/App/sine_model_data.d 
+./X-CUBE-AI/App/sine_model_1641213730071.d \
+./X-CUBE-AI/App/sine_model_1641213730071_data.d \
+./X-CUBE-AI/App/sine_model_data.d \
+./X-CUBE-AI/App/tonecrafter.d \
+./X-CUBE-AI/App/tonecrafter_data.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

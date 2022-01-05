@@ -1,0 +1,122 @@
+Neural Network Tools for STM32 v1.3.0 (AI tools v5.1.0)
+Created date       : 2022-01-05 11:17:03
+Parameters         : generate --name tonecrafter -m /home/pierre/Téléchargements/ToneCrafter.h5 --type keras --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace90181551774462166428464787091484 --output /home/pierre/.stm32cubemx/stm32ai_output
+
+Exec/report summary (generate dur=0.42s err=0)
+------------------------------------------------------------------------------------------------------------------------
+model file         : /home/pierre/Téléchargements/ToneCrafter.h5
+type               : keras (keras_dump) - tf.keras 2.2.4-tf
+c_name             : tonecrafter
+compression        : None
+quantize           : None
+workspace dir      : /tmp/mxAI_workspace90181551774462166428464787091484
+output dir         : /home/pierre/.stm32cubemx/stm32ai_output
+
+model_name         : ToneCrafter
+model_hash         : c1b5d61672c653b8c1a14b59878f4710
+input              : input_0 [120 items, 480 B, ai_float, FLOAT32, (120, 1, 1)]
+inputs (total)     : 480 B
+output             : dense [1 items, 4 B, ai_float, FLOAT32, (1,)]
+outputs (total)    : 4 B
+params #           : 3,057 items (11.94 KiB)
+macc               : 3,512
+weights (ro)       : 12,516 B (12.22 KiB) (2.36%) 
+activations (rw)   : 784 B (784 B) 
+ram (total)        : 1,268 B (1.24 KiB) = 784 + 480 + 4
+
+------------------------------------------------------------------------------------------------------------------------
+id  layer (type)      output shape      param #     connected to             macc           rom                
+------------------------------------------------------------------------------------------------------------------------
+0   input_0 (Input)   (120, 1, 1)                                                                              
+    conv1d (Conv2D)   (10, 1, 4)        52          input_0                  484            208                
+------------------------------------------------------------------------------------------------------------------------
+1   conv1d_1 (Conv2D) (1, 1, 4)         196         conv1d                   196            784                
+------------------------------------------------------------------------------------------------------------------------
+2   lstm (LSTM)       (1, 1, 24)        2,784       conv1d_1                 2,808          11,424             
+------------------------------------------------------------------------------------------------------------------------
+3   dense (Dense)     (1, 1, 1)         25          lstm                     24             100                
+------------------------------------------------------------------------------------------------------------------------
+ToneCrafter p=3057(11.94 KBytes) macc=3512 rom=12.22 KBytes (2.36%) ram=784 B io_ram=484 B
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name         : tonecrafter
+c-name             : tonecrafter
+c-node #           : 4
+c-array #          : 16
+activations size   : 784
+weights size       : 12516
+macc               : 3512
+inputs             : ['input_0_output_array']
+outputs            : ['dense_output_array']
+
+
+C-Arrays (16)
+------------------------------------------------------------------------------------------------------------------------
+c_id  name (*_array)    item/size           mem-pool     c-type       fmt    comment            
+------------------------------------------------------------------------------------------------------------------------
+0     lstm_scratch0     168/672             activations  float        float                     
+1     dense_bias        1/4                 weights      const float  float                     
+2     dense_weights     24/96               weights      const float  float                     
+3     lstm_bias         96/384              weights      const float  float                     
+4     lstm_peephole     72/288              weights      const float  float                     
+5     lstm_recurrent    2304/9216           weights      const float  float                     
+6     lstm_kernel       384/1536            weights      const float  float                     
+7     conv1d_1_bias     4/16                weights      const float  float                     
+8     conv1d_1_weights  192/768             weights      const float  float                     
+9     conv1d_bias       4/16                weights      const float  float                     
+10    conv1d_weights    48/192              weights      const float  float                     
+11    input_0_output    120/480             user         float        float  /input             
+12    conv1d_output     40/160              activations  float        float                     
+13    conv1d_1_output   4/16                activations  float        float                     
+14    lstm_output       24/96               activations  float        float                     
+15    dense_output      1/4                 user         float        float  /output            
+------------------------------------------------------------------------------------------------------------------------
+
+
+C-Layers (4)
+------------------------------------------------------------------------------------------------------------------------
+c_id  name (*_layer)  id  type    macc        rom         tensors              shape (array id)                       
+------------------------------------------------------------------------------------------------------------------------
+0     conv1d          0   conv2d  484         208         I: input_0_output    [1, 120, 1, 1] (11)                    
+                                                          W: conv1d_weights                                           
+                                                          W: conv1d_bias                                              
+                                                          O: conv1d_output     [1, 10, 1, 4] (12)                     
+------------------------------------------------------------------------------------------------------------------------
+1     conv1d_1        1   conv2d  196         784         I: conv1d_output     [1, 10, 1, 4] (12)                     
+                                                          W: conv1d_1_weights                                         
+                                                          W: conv1d_1_bias                                            
+                                                          O: conv1d_1_output   [1, 1, 1, 4] (13)                      
+------------------------------------------------------------------------------------------------------------------------
+2     lstm            2   lstm    2808        11424       I: conv1d_1_output   [1, 1, 1, 4] (13)                      
+                                                          S: lstm_scratch0                                            
+                                                          W: lstm_kernel                                              
+                                                          W: lstm_recurrent                                           
+                                                          W: lstm_peephole                                            
+                                                          W: lstm_bias                                                
+                                                          O: lstm_output       [1, 1, 1, 24] (14)                     
+------------------------------------------------------------------------------------------------------------------------
+3     dense           3   dense   24          100         I: lstm_output       [1, 1, 1, 24] (14)                     
+                                                          W: dense_weights                                            
+                                                          W: dense_bias                                               
+                                                          O: dense_output      [1, 1, 1, 1] (15)                      
+------------------------------------------------------------------------------------------------------------------------
+
+
+ 
+Complexity per-layer - macc=3,512 rom=12,516
+------------------------------------------------------------------------------------------------------------------------
+id      layer (type)      macc                                    rom                                    
+------------------------------------------------------------------------------------------------------------------------
+0       conv1d (Conv2D)   ||||||                           13.8%  |                                 1.7% 
+1       conv1d_1 (Conv2D) |||                               5.6%  |||                               6.3% 
+2       lstm (LSTM)       |||||||||||||||||||||||||||||||  80.0%  |||||||||||||||||||||||||||||||  91.3% 
+3       dense (Dense)     |                                 0.7%  |                                 0.8% 
+------------------------------------------------------------------------------------------------------------------------
+
+
+Evaluation report (summary)
+------------------------------------------------------------
+NOT EVALUATED

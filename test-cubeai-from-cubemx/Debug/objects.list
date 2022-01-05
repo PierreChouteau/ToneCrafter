@@ -62,4 +62,8 @@
 "./USB_HOST/Target/usbh_conf.o"
 "./USB_HOST/Target/usbh_platform.o"
 "./X-CUBE-AI/App/sine_model.o"
+"./X-CUBE-AI/App/sine_model_1641213730071.o"
+"./X-CUBE-AI/App/sine_model_1641213730071_data.o"
 "./X-CUBE-AI/App/sine_model_data.o"
+"./X-CUBE-AI/App/tonecrafter.o"
+"./X-CUBE-AI/App/tonecrafter_data.o"

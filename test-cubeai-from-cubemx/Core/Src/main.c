@@ -28,6 +28,9 @@
 
 #include "ai_datatypes_defines.h"
 #include "ai_platform.h"
+#include "tonecrafter.h"
+#include "tonecrafter_data.h"
+
 #include "sine_model.h"
 #include "sine_model_data.h"
 /* USER CODE END Includes */
@@ -85,9 +88,9 @@ UART_HandleTypeDef huart6;
 
 SDRAM_HandleTypeDef hsdram1;
 
-float test = 0.0f;
-
 /* USER CODE BEGIN PV */
+
+float test;
 
 /* USER CODE END PV */
 
@@ -146,24 +149,24 @@ int main(void)
   float y_val;
 
   // Chunk of memory used to hold intermediate values for neural network
-  AI_ALIGNED(4) ai_u8 activations[AI_SINE_MODEL_DATA_ACTIVATIONS_SIZE];
+  AI_ALIGNED(4) ai_u8 activations[AI_TONECRAFTER_DATA_ACTIVATIONS_SIZE];
 
   // Buffers used to store input and output tensors
-  AI_ALIGNED(4) ai_i8 in_data[AI_SINE_MODEL_IN_1_SIZE_BYTES];
-  AI_ALIGNED(4) ai_i8 out_data[AI_SINE_MODEL_OUT_1_SIZE_BYTES];
+  AI_ALIGNED(4) ai_i8 in_data[AI_TONECRAFTER_IN_1_SIZE_BYTES];
+  AI_ALIGNED(4) ai_i8 out_data[AI_TONECRAFTER_OUT_1_SIZE_BYTES];
 
   // Pointer to our model
-  ai_handle sine_model = AI_HANDLE_NULL;
+  ai_handle tonecrafter = AI_HANDLE_NULL;
 
   // Initialize wrapper structs that hold pointers to data and info about the
   // data (tensor height, width, channels)
-  ai_buffer ai_input[AI_SINE_MODEL_IN_NUM] = AI_SINE_MODEL_IN;
-  ai_buffer ai_output[AI_SINE_MODEL_OUT_NUM] = AI_SINE_MODEL_OUT;
+  ai_buffer ai_input[AI_TONECRAFTER_IN_NUM] = AI_TONECRAFTER_IN;
+  ai_buffer ai_output[AI_TONECRAFTER_OUT_NUM] = AI_TONECRAFTER_OUT;
 
   // Set working memory and get weights/biases from model
   ai_network_params ai_params = {
-    AI_SINE_MODEL_DATA_WEIGHTS(ai_sine_model_data_weights_get()),
-    AI_SINE_MODEL_DATA_ACTIVATIONS(activations)
+    AI_TONECRAFTER_DATA_WEIGHTS(ai_tonecrafter_data_weights_get()),
+    AI_TONECRAFTER_DATA_ACTIVATIONS(activations)
   };
 
 
@@ -201,60 +204,60 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC3_Init();
   MX_CRC_Init();
-//  MX_DCMI_Init();
-//  MX_DMA2D_Init();
-//  MX_ETH_Init();
-//  MX_FMC_Init();
-//  MX_I2C1_Init();
-//  MX_I2C3_Init();
-//  MX_LTDC_Init();
-//  MX_QUADSPI_Init();
-//  MX_RTC_Init();
-//  MX_SAI2_Init();
-//  MX_SDMMC1_SD_Init();
-//  MX_SPDIFRX_Init();
-//  MX_TIM1_Init();
-//  MX_TIM2_Init();
-//  MX_TIM3_Init();
-//  MX_TIM5_Init();
-//  MX_TIM8_Init();
+  MX_DCMI_Init();
+  MX_DMA2D_Init();
+  // MX_ETH_Init();
+  MX_FMC_Init();
+  MX_I2C1_Init();
+  MX_I2C3_Init();
+  MX_LTDC_Init();
+  MX_QUADSPI_Init();
+  MX_RTC_Init();
+  MX_SAI2_Init();
+  MX_SDMMC1_SD_Init();
+  MX_SPDIFRX_Init();
+  MX_TIM1_Init();
+  MX_TIM2_Init();
+  MX_TIM3_Init();
+  MX_TIM5_Init();
+  MX_TIM8_Init();
   MX_TIM12_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
-//  MX_FATFS_Init();
-//  MX_USB_HOST_Init();
+  MX_FATFS_Init();
+  MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
 
-  // Start timer/counter
-  HAL_TIM_Base_Start(&htim12);
+    // Start timer/counter
+    HAL_TIM_Base_Start(&htim12);
 
-  // Greetings!
-  buf_len = sprintf(buf, "\r\n\r\nSTM32 X-Cube-AI test\r\n");
-  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
-
-  // Create instance of neural network
-  ai_err = ai_sine_model_create(&sine_model, AI_SINE_MODEL_DATA_CONFIG);
-  if (ai_err.type != AI_ERROR_NONE)
-  {
-    buf_len = sprintf(buf, "Error: could not create NN instance\r\n");
+    // Greetings!
+    buf_len = sprintf(buf, "\r\n\r\nSTM32 X-Cube-AI test\r\n");
     HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
-    while(1);
-  }
 
-  // Initialize neural network
-  if (!ai_sine_model_init(sine_model, &ai_params))
-  {
-    buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
-    HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
-    while(1);
-  }
+    // Create instance of neural network
+    ai_err = ai_tonecrafter_create(&tonecrafter, AI_TONECRAFTER_DATA_CONFIG);
+    if (ai_err.type != AI_ERROR_NONE)
+    {
+      buf_len = sprintf(buf, "Error: could not create NN instance\r\n");
+      HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+      while(1);
+    }
+
+    // Initialize neural network
+    if (!ai_tonecrafter_init(tonecrafter, &ai_params))
+    {
+      buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
+      HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+      while(1);
+    }
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+    while (1)
+    {
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
 
@@ -262,18 +265,18 @@ int main(void)
     LED_Toggle();
     HAL_Delay(500);
 
-    // Fill input buffer (use test value)
-	for (uint32_t i = 0; i < AI_SINE_MODEL_IN_1_SIZE; i++)
-	{
-	  ((ai_float *)in_data)[i] = (ai_float)test;
-	}
-	test += 0.1;
+      // Fill input buffer (use test value)
+  	for (uint32_t i = 0; i < AI_TONECRAFTER_IN_1_SIZE; i++)
+  	{
+  	  ((ai_float *)in_data)[i] = (ai_float)test;
+  	  test += 0.1;
+  	}
 
-	// Get current timestamp
-	timestamp = htim12.Instance->CNT;
+  	// Get current timestamp
+  	timestamp = htim12.Instance->CNT;
 
 	// Perform inference
-	nbatch = ai_sine_model_run(sine_model, &ai_input[0], &ai_output[0]);
+	nbatch = ai_tonecrafter_run(tonecrafter, &ai_input[0], &ai_output[0]);
 	if (nbatch != 1) {
 	  buf_len = sprintf(buf, "Error: could not run inference\r\n");
 	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);

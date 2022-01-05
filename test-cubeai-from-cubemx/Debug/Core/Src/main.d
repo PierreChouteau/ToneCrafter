@@ -57,12 +57,13 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/sd_diskio.h \
  ../USB_HOST/App/usb_host.h \
  ../Middlewares/ST/AI/Inc/ai_datatypes_defines.h \
- ../Middlewares/ST/AI/Inc/ai_platform.h ../X-CUBE-AI/App/sine_model.h \
+ ../Middlewares/ST/AI/Inc/ai_platform.h ../X-CUBE-AI/App/tonecrafter.h \
  ../Middlewares/ST/AI/Inc/ai_platform_interface.h \
  ../Middlewares/ST/AI/Inc/datatypes_network.h \
  ../Middlewares/ST/AI/Inc/ai_datatypes_format.h \
  ../Middlewares/ST/AI/Inc/core_datatypes.h \
  ../Middlewares/ST/AI/Inc/formats_list.h \
+ ../X-CUBE-AI/App/tonecrafter_data.h ../X-CUBE-AI/App/sine_model.h \
  ../X-CUBE-AI/App/sine_model_data.h
 
 ../Core/Inc/main.h:
@@ -193,7 +194,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Middlewares/ST/AI/Inc/ai_platform.h:
 
-../X-CUBE-AI/App/sine_model.h:
+../X-CUBE-AI/App/tonecrafter.h:
 
 ../Middlewares/ST/AI/Inc/ai_platform_interface.h:
 
@@ -204,5 +205,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/ST/AI/Inc/core_datatypes.h:
 
 ../Middlewares/ST/AI/Inc/formats_list.h:
+
+../X-CUBE-AI/App/tonecrafter_data.h:
+
+../X-CUBE-AI/App/sine_model.h:
 
 ../X-CUBE-AI/App/sine_model_data.h:
