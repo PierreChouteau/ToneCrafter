@@ -25,7 +25,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_crc_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma2d.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dcmi.h \
- ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_sdram.h \
@@ -49,22 +48,40 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_hcd.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
+ ../Core/Inc/FreeRTOSConfig.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  ../FATFS/App/fatfs.h ../Middlewares/Third_Party/FatFs/src/ff.h \
  ../Middlewares/Third_Party/FatFs/src/integer.h ../FATFS/Target/ffconf.h \
  ../FATFS/Target/bsp_driver_sd.h ../FATFS/Target/fatfs_platform.h \
  ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
  ../Middlewares/Third_Party/FatFs/src/diskio.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/sd_diskio.h \
- ../USB_HOST/App/usb_host.h \
- ../Middlewares/ST/AI/Inc/ai_datatypes_defines.h \
- ../Middlewares/ST/AI/Inc/ai_platform.h ../X-CUBE-AI/App/tonecrafter.h \
- ../Middlewares/ST/AI/Inc/ai_platform_interface.h \
- ../Middlewares/ST/AI/Inc/datatypes_network.h \
- ../Middlewares/ST/AI/Inc/ai_datatypes_format.h \
- ../Middlewares/ST/AI/Inc/core_datatypes.h \
- ../Middlewares/ST/AI/Inc/formats_list.h \
- ../X-CUBE-AI/App/tonecrafter_data.h ../X-CUBE-AI/App/sine_model.h \
- ../X-CUBE-AI/App/sine_model_data.h
+ ../LIBJPEG/App/libjpeg.h \
+ ../Middlewares/Third_Party/LibJPEG/include/jpeglib.h \
+ ../LIBJPEG/Target/jconfig.h ../LIBJPEG/Target/jdata_conf.h \
+ ../LIBJPEG/Target/jmorecfg.h ../USB_HOST/App/usb_host.h \
+ ../Core/Inc/bsp/mpu.h ../Core/Inc/test.h ../Core/Inc/main.h \
+ ../Core/Inc/bsp/disco_lcd.h ../Core/Inc/bsp/disco_sdram.h \
+ ../Core/Inc/fonts.h ../Core/Inc/types.h ../Core/Inc/bsp/disco_base.h \
+ ../Core/Inc/bsp/disco_qspi.h ../Core/Inc/bsp/disco_sdram.h \
+ ../Core/Inc/bsp/disco_ts.h ../Core/Inc/bsp/disco_base.h \
+ ../Core/Inc/bsp/disco_sai.h ../Core/Inc/bsp/wm8994.h ../Core/Inc/audio.h \
+ ../Core/Inc/ui.h ../Core/Inc/bsp/disco_lcd.h
 
 ../Core/Inc/main.h:
 
@@ -120,8 +137,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dcmi.h:
 
-../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h:
-
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash.h:
 
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h:
@@ -168,6 +183,40 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h:
 
+../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
+
+../Core/Inc/FreeRTOSConfig.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h:
+
+../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
+
 ../FATFS/App/fatfs.h:
 
 ../Middlewares/Third_Party/FatFs/src/ff.h:
@@ -188,26 +237,48 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../FATFS/Target/sd_diskio.h:
 
+../LIBJPEG/App/libjpeg.h:
+
+../Middlewares/Third_Party/LibJPEG/include/jpeglib.h:
+
+../LIBJPEG/Target/jconfig.h:
+
+../LIBJPEG/Target/jdata_conf.h:
+
+../LIBJPEG/Target/jmorecfg.h:
+
 ../USB_HOST/App/usb_host.h:
 
-../Middlewares/ST/AI/Inc/ai_datatypes_defines.h:
+../Core/Inc/bsp/mpu.h:
 
-../Middlewares/ST/AI/Inc/ai_platform.h:
+../Core/Inc/test.h:
 
-../X-CUBE-AI/App/tonecrafter.h:
+../Core/Inc/main.h:
 
-../Middlewares/ST/AI/Inc/ai_platform_interface.h:
+../Core/Inc/bsp/disco_lcd.h:
 
-../Middlewares/ST/AI/Inc/datatypes_network.h:
+../Core/Inc/bsp/disco_sdram.h:
 
-../Middlewares/ST/AI/Inc/ai_datatypes_format.h:
+../Core/Inc/fonts.h:
 
-../Middlewares/ST/AI/Inc/core_datatypes.h:
+../Core/Inc/types.h:
 
-../Middlewares/ST/AI/Inc/formats_list.h:
+../Core/Inc/bsp/disco_base.h:
 
-../X-CUBE-AI/App/tonecrafter_data.h:
+../Core/Inc/bsp/disco_qspi.h:
 
-../X-CUBE-AI/App/sine_model.h:
+../Core/Inc/bsp/disco_sdram.h:
 
-../X-CUBE-AI/App/sine_model_data.h:
+../Core/Inc/bsp/disco_ts.h:
+
+../Core/Inc/bsp/disco_base.h:
+
+../Core/Inc/bsp/disco_sai.h:
+
+../Core/Inc/bsp/wm8994.h:
+
+../Core/Inc/audio.h:
+
+../Core/Inc/ui.h:
+
+../Core/Inc/bsp/disco_lcd.h:

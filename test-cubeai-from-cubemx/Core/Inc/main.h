@@ -56,10 +56,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
-void LED_On();
-void LED_Off();
-void LED_Toggle();
+void Error(char* msg);
 
 /* USER CODE END EFP */
 
@@ -200,6 +197,8 @@ void LED_Toggle();
 #define VCP_TX_GPIO_Port GPIOA
 #define RCC_OSC32_OUT_Pin GPIO_PIN_15
 #define RCC_OSC32_OUT_GPIO_Port GPIOC
+#define BLUE_BTN_Pin GPIO_PIN_11
+#define BLUE_BTN_GPIO_Port GPIOI
 #define LCD_G6_Pin GPIO_PIN_1
 #define LCD_G6_GPIO_Port GPIOK
 #define LCD_G7_Pin GPIO_PIN_2
@@ -212,6 +211,7 @@ void LED_Toggle();
 #define FMC_A2_GPIO_Port GPIOF
 #define LCD_INT_Pin GPIO_PIN_13
 #define LCD_INT_GPIO_Port GPIOI
+#define LCD_INT_EXTI_IRQn EXTI15_10_IRQn
 #define LCD_R0_Pin GPIO_PIN_15
 #define LCD_R0_GPIO_Port GPIOI
 #define LCD_G4_Pin GPIO_PIN_11

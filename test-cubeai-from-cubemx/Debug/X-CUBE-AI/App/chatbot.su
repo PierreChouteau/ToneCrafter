@@ -1,0 +1,9 @@
+chatbot.c:393:9:chatbot_configure_activations	24	static
+chatbot.c:426:9:chatbot_configure_weights	24	static
+chatbot.c:465:9:ai_chatbot_get_info	136	static
+chatbot.c:512:10:ai_chatbot_get_error	16	static
+chatbot.c:518:10:ai_chatbot_create	24	static
+chatbot.c:528:11:ai_chatbot_destroy	16	static
+chatbot.c:534:9:ai_chatbot_init	24	static
+chatbot.c:551:8:ai_chatbot_run	24	static
+chatbot.c:558:8:ai_chatbot_forward	16	static

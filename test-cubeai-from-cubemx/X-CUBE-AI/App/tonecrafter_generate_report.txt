@@ -1,15 +1,15 @@
 Neural Network Tools for STM32 v1.3.0 (AI tools v5.1.0)
-Created date       : 2022-01-05 11:17:03
-Parameters         : generate --name tonecrafter -m /home/pierre/Téléchargements/ToneCrafter.h5 --type keras --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace90181551774462166428464787091484 --output /home/pierre/.stm32cubemx/stm32ai_output
+Created date       : 2022-01-06 09:30:44
+Parameters         : generate --name tonecrafter -m /home/pierre/Téléchargements/ToneCrafter.h5 --type keras --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace51142224898986778754485332199918 --output /home/pierre/.stm32cubemx/stm32ai_output
 
-Exec/report summary (generate dur=0.42s err=0)
+Exec/report summary (generate dur=0.41s err=0)
 ------------------------------------------------------------------------------------------------------------------------
 model file         : /home/pierre/Téléchargements/ToneCrafter.h5
 type               : keras (keras_dump) - tf.keras 2.2.4-tf
 c_name             : tonecrafter
 compression        : None
 quantize           : None
-workspace dir      : /tmp/mxAI_workspace90181551774462166428464787091484
+workspace dir      : /tmp/mxAI_workspace51142224898986778754485332199918
 output dir         : /home/pierre/.stm32cubemx/stm32ai_output
 
 model_name         : ToneCrafter
