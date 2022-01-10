@@ -355,7 +355,7 @@ int main(void)
 		MX_USB_HOST_Process();
 
 		/* USER CODE BEGIN 3 */
-		LED_Toggle();
+		/*LED_Toggle();
 		HAL_Delay(500);
 
 		  // Fill input buffer (use test value)
@@ -383,7 +383,7 @@ int main(void)
 		HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
 
 		// Wait before doing it again
-		HAL_Delay(500);
+		HAL_Delay(500);*/
 	}
 	/* USER CODE END 3 */
 }
