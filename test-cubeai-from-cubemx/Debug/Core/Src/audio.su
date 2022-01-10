@@ -1,0 +1,12 @@
+audio.c:135:6:audioLoop	32	static
+audio.c:191:6:calculateFFT	24	static
+audio.c:210:13:accumulateInputLevels	24	static
+audio.c:240:6:HAL_SAI_RxCpltCallback	16	static
+audio.c:249:6:HAL_SAI_RxHalfCpltCallback	16	static
+audio.c:260:14:readFromAudioScratch	24	static
+audio.c:271:13:writeToAudioScratch	24	static
+audio.c:284:13:no_effect	24	static
+audio.c:299:13:echo_effect	48	static
+audio.c:328:13:overdrive_effect	40	static
+audio.c:338:13:noise_gate	32	static
+audio.c:359:13:processAudio	16	static

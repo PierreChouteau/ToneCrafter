@@ -45,6 +45,12 @@
 #include <audio.h>
 #include <ui.h>
 
+#include "ai_datatypes_defines.h"
+#include "ai_platform.h"
+
+#include "tonecrafter.h"
+#include "tonecrafter_data.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -172,13 +178,50 @@ int main(void)
 	SCB_InvalidateDCache();
 	SCB_InvalidateICache();
 
+	/*Code Projet 7 Janvier*/
+	char buf[50];
+	int buf_len = 0;
+	ai_error ai_err;
+	ai_i32 nbatch;
+	uint32_t timestamp;
+	float y_val;
+	float test = 0.0;
+
+	// Chunk of memory used to hold intermediate values for neural network
+	AI_ALIGNED(4) ai_u8 activations[AI_TONECRAFTER_DATA_ACTIVATIONS_SIZE];
+
+	// Buffers used to store input and output tensors
+	AI_ALIGNED(4) ai_i8 in_data[AI_TONECRAFTER_IN_1_SIZE_BYTES];
+	AI_ALIGNED(4) ai_i8 out_data[AI_TONECRAFTER_OUT_1_SIZE_BYTES];
+
+	// Pointer to our model
+	ai_handle tonecrafter = AI_HANDLE_NULL;
+
+	// Initialize wrapper structs that hold pointers to data and info about the
+	// data (tensor height, width, channels)
+	ai_buffer ai_input[AI_TONECRAFTER_IN_NUM] = AI_TONECRAFTER_IN;
+	ai_buffer ai_output[AI_TONECRAFTER_OUT_NUM] = AI_TONECRAFTER_OUT;
+
+	// Set working memory and get weights/biases from model
+	ai_network_params ai_params = {
+	AI_TONECRAFTER_DATA_WEIGHTS(ai_tonecrafter_data_weights_get()),
+	AI_TONECRAFTER_DATA_ACTIVATIONS(activations)
+	};
+
+
+	// Set pointers wrapper structs to our data buffers
+	ai_input[0].n_batches = 1;
+	ai_input[0].data = AI_HANDLE_PTR(in_data);
+	ai_output[0].n_batches = 1;
+	ai_output[0].data = AI_HANDLE_PTR(out_data);
+
 	/* USER CODE END 1 */
 
 	/* Enable I-Cache---------------------------------------------------------*/
-	//SCB_EnableICache();
+	SCB_EnableICache();
 
 	/* Enable D-Cache---------------------------------------------------------*/
-	//SCB_EnableDCache();
+	SCB_EnableDCache();
 
 	/* MCU Configuration--------------------------------------------------------*/
 
@@ -221,24 +264,50 @@ int main(void)
 	MX_USART1_UART_Init();
 	MX_USART6_UART_Init();
 	MX_FATFS_Init();
-	MX_LIBJPEG_Init();
+	// MX_LIBJPEG_Init();
+
 	/* USER CODE BEGIN 2 */
 
 	MPU_Init();
 
 	/* post-init SDRAM */
 	// Deactivate speculative/cache access to first FMC Bank to save FMC bandwidth
-	FMC_Bank1->BTCR[0] = 0x000030D2;
+	// FMC_Bank1->BTCR[0] = 0x000030D2;
 
 	/* post-init touchscreen */
-	TS_Init();
-	printf("Touchscreen Init: OK\n");
+	// TS_Init();
+	// printf("Touchscreen Init: OK\n");
 
-	SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
-	SCB_EnableDCache();
+	// SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
+	// SCB_EnableDCache();
 
 	//test();
 	//audioLoop(); // comment to use RTOS (see below)
+
+	/*Code Projet 7 janvier*/
+	// Start timer/counter
+	HAL_TIM_Base_Start(&htim12);
+
+	// Greetings!
+	buf_len = sprintf(buf, "\r\n\r\nSTM32 X-Cube-AI test\r\n");
+	HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+
+	// Create instance of neural network
+	ai_err = ai_tonecrafter_create(&tonecrafter, AI_TONECRAFTER_DATA_CONFIG);
+	if (ai_err.type != AI_ERROR_NONE)
+	{
+	  buf_len = sprintf(buf, "Error: could not create NN instance\r\n");
+	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+	  while(1);
+	}
+
+	// Initialize neural network
+	if (!ai_tonecrafter_init(tonecrafter, &ai_params))
+	{
+	  buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
+	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+	  while(1);
+	}
 
 	/* USER CODE END 2 */
 
@@ -260,19 +329,19 @@ int main(void)
 
 	/* Create the thread(s) */
 	/* definition and creation of defaultTask */
-	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
-	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+	/*osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
+	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);*/
 
 	/* definition and creation of uiTask */
-	osThreadDef(uiTask, startUITask, osPriorityLow, 0, 2048); // 128 = stack size
-	uiTaskHandle = osThreadCreate(osThread(uiTask), NULL);
+	/*osThreadDef(uiTask, startUITask, osPriorityLow, 0, 2048); // 128 = stack size
+	uiTaskHandle = osThreadCreate(osThread(uiTask), NULL);*/
 
 	/* USER CODE BEGIN RTOS_THREADS */
 
 	/* USER CODE END RTOS_THREADS */
 
 	/* Start scheduler */
-	osKernelStart();
+	// osKernelStart();
 
 	/* We should never get here as control is now taken by the scheduler */
 	/* Infinite loop */
@@ -282,6 +351,39 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
+		/* USER CODE END WHILE */
+		MX_USB_HOST_Process();
+
+		/* USER CODE BEGIN 3 */
+		LED_Toggle();
+		HAL_Delay(500);
+
+		  // Fill input buffer (use test value)
+		for (uint32_t i = 0; i < AI_TONECRAFTER_IN_1_SIZE; i++)
+		{
+		  ((ai_float *)in_data)[i] = (ai_float)test;
+		  test += 0.1;
+		}
+
+		// Get current timestamp
+		timestamp = htim12.Instance->CNT;
+
+		// Perform inference
+		nbatch = ai_tonecrafter_run(tonecrafter, &ai_input[0], &ai_output[0]);
+		if (nbatch != 1) {
+		  buf_len = sprintf(buf, "Error: could not run inference\r\n");
+		  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+		}
+
+		// Read output (predicted y) of neural network
+		y_val = ((float *)out_data)[0];
+
+		// Print output of neural network along with inference time (microseconds)
+		buf_len = sprintf(buf, "Output: %f | Duration: %lu\r\n", y_val, htim12.Instance->CNT - timestamp);
+		HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+
+		// Wait before doing it again
+		HAL_Delay(500);
 	}
 	/* USER CODE END 3 */
 }
