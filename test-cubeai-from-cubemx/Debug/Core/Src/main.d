@@ -83,13 +83,14 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/bsp/disco_sai.h ../Core/Inc/bsp/wm8994.h ../Core/Inc/audio.h \
  ../Core/Inc/ui.h ../Core/Inc/bsp/disco_lcd.h \
  ../Middlewares/ST/AI/Inc/ai_datatypes_defines.h \
- ../Middlewares/ST/AI/Inc/ai_platform.h ../X-CUBE-AI/App/tonecrafter.h \
+ ../Middlewares/ST/AI/Inc/ai_platform.h \
  ../Middlewares/ST/AI/Inc/ai_platform_interface.h \
  ../Middlewares/ST/AI/Inc/datatypes_network.h \
  ../Middlewares/ST/AI/Inc/ai_datatypes_format.h \
  ../Middlewares/ST/AI/Inc/core_datatypes.h \
- ../Middlewares/ST/AI/Inc/formats_list.h \
- ../X-CUBE-AI/App/tonecrafter_data.h
+ ../Middlewares/ST/AI/Inc/formats_list.h ../X-CUBE-AI/App/tonecrafter.h \
+ ../X-CUBE-AI/App/tonecrafter_data.h ../X-CUBE-AI/App/sine_model.h \
+ ../X-CUBE-AI/App/sine_model_data.h
 
 ../Core/Inc/main.h:
 
@@ -295,8 +296,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Middlewares/ST/AI/Inc/ai_platform.h:
 
-../X-CUBE-AI/App/tonecrafter.h:
-
 ../Middlewares/ST/AI/Inc/ai_platform_interface.h:
 
 ../Middlewares/ST/AI/Inc/datatypes_network.h:
@@ -307,4 +306,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Middlewares/ST/AI/Inc/formats_list.h:
 
+../X-CUBE-AI/App/tonecrafter.h:
+
 ../X-CUBE-AI/App/tonecrafter_data.h:
+
+../X-CUBE-AI/App/sine_model.h:
+
+../X-CUBE-AI/App/sine_model_data.h:

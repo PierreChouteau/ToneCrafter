@@ -47,9 +47,13 @@
 
 #include "ai_datatypes_defines.h"
 #include "ai_platform.h"
+#include "ai_platform_interface.h"
 
 #include "tonecrafter.h"
 #include "tonecrafter_data.h"
+
+#include "sine_model.h"
+#include "sine_model_data.h"
 
 /* USER CODE END Includes */
 
@@ -175,10 +179,10 @@ int main(void)
 
 	// this disables both I and D cache when tricky debugging
 	// (but keep in mind caching approximately divides the audio processing time by 4)
-	// SCB_InvalidateDCache();
-	// SCB_InvalidateICache();
+//	SCB_InvalidateDCache();
+//	SCB_InvalidateICache();
 
-	/*Code Projet 7 Janvier*/
+
 	char buf[50];
 	int buf_len = 0;
 	ai_error ai_err;
@@ -218,10 +222,10 @@ int main(void)
 	/* USER CODE END 1 */
 
 	/* Enable I-Cache---------------------------------------------------------*/
-	SCB_EnableICache();
+	//SCB_EnableICache();
 
 	/* Enable D-Cache---------------------------------------------------------*/
-	SCB_EnableDCache();
+	//SCB_EnableDCache();
 
 	/* MCU Configuration--------------------------------------------------------*/
 
@@ -242,19 +246,19 @@ int main(void)
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_DMA_Init();
-	MX_ADC3_Init();
-	MX_CRC_Init();
-	MX_DCMI_Init();
+	//MX_ADC3_Init();
+	//MX_CRC_Init();
+	//MX_DCMI_Init();
 	MX_DMA2D_Init();
 	MX_FMC_Init();
 	MX_I2C1_Init();
 	MX_I2C3_Init();
 	MX_LTDC_Init();
 	MX_QUADSPI_Init();
-	MX_RTC_Init();
+	//MX_RTC_Init();
 	MX_SAI2_Init();
-	MX_SDMMC1_SD_Init();
-	MX_SPDIFRX_Init();
+	//MX_SDMMC1_SD_Init();
+	//MX_SPDIFRX_Init();
 	MX_TIM1_Init();
 	MX_TIM2_Init();
 	MX_TIM3_Init();
@@ -263,51 +267,25 @@ int main(void)
 	MX_TIM12_Init();
 	MX_USART1_UART_Init();
 	MX_USART6_UART_Init();
-	MX_FATFS_Init();
-	// MX_LIBJPEG_Init();
-
+	//MX_FATFS_Init();
+//	MX_LIBJPEG_Init();
 	/* USER CODE BEGIN 2 */
 
-	MPU_Init();
+//	MPU_Init();
 
 	/* post-init SDRAM */
 	// Deactivate speculative/cache access to first FMC Bank to save FMC bandwidth
-	FMC_Bank1->BTCR[0] = 0x000030D2;
+//	FMC_Bank1->BTCR[0] = 0x000030D2;
 
 	/* post-init touchscreen */
-	TS_Init();
-	printf("Touchscreen Init: OK\n");
+	//TS_Init();
+	//printf("Touchscreen Init: OK\n");
 
-	SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
-	SCB_EnableDCache();
+	//SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
+	//SCB_EnableDCache();
 
 	//test();
 	//audioLoop(); // comment to use RTOS (see below)
-
-	/*Code Projet 7 janvier*/
-	// Start timer/counter
-	HAL_TIM_Base_Start(&htim12);
-
-	// Greetings!
-	buf_len = sprintf(buf, "\r\n\r\nSTM32 X-Cube-AI test\r\n");
-	HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
-
-	// Create instance of neural network
-	ai_err = ai_tonecrafter_create(&tonecrafter, AI_TONECRAFTER_DATA_CONFIG);
-	if (ai_err.type != AI_ERROR_NONE)
-	{
-	  buf_len = sprintf(buf, "Error: could not create NN instance\r\n");
-	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
-	  while(1);
-	}
-//
-//	// Initialize neural network
-//	if (!ai_tonecrafter_init(tonecrafter, &ai_params))
-//	{
-//	  buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
-//	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
-//	  while(1);
-//	}
 
 	/* USER CODE END 2 */
 
@@ -329,33 +307,52 @@ int main(void)
 
 	/* Create the thread(s) */
 	/* definition and creation of defaultTask */
-	/*osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
-	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);*/
+	//osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
+	//defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
 	/* definition and creation of uiTask */
-	/*osThreadDef(uiTask, startUITask, osPriorityLow, 0, 2048); // 128 = stack size
-	uiTaskHandle = osThreadCreate(osThread(uiTask), NULL);*/
+	//osThreadDef(uiTask, startUITask, osPriorityLow, 0, 2048); // 128 = stack size
+	//uiTaskHandle = osThreadCreate(osThread(uiTask), NULL);
 
 	/* USER CODE BEGIN RTOS_THREADS */
 
 	/* USER CODE END RTOS_THREADS */
 
 	/* Start scheduler */
-	// osKernelStart();
+	//osKernelStart();
 
 	/* We should never get here as control is now taken by the scheduler */
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
+
+	// ici ton code !
+
+    buf_len = sprintf(buf, "\r\n\r\nSTM32 X-Cube-AI test\r\n");
+    HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+
+    // Create instance of neural network
+    ai_err = ai_tonecrafter_create(&tonecrafter, AI_TONECRAFTER_DATA_CONFIG);
+    if (ai_err.type != AI_ERROR_NONE)
+    {
+      buf_len = sprintf(buf, "Error: could not create NN instance\r\n");
+      HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+      while(1);
+    }
+
+    // Initialize neural network
+    if (!ai_tonecrafter_init(tonecrafter, &ai_params))
+    {
+      buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
+      HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+      while(1);
+    }
+
 	while (1)
 	{
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		/* USER CODE END WHILE */
-		MX_USB_HOST_Process();
-
-		/* USER CODE BEGIN 3 */
-		/*LED_Toggle();
+		LED_Toggle();
 		HAL_Delay(500);
 
 		  // Fill input buffer (use test value)
@@ -383,7 +380,7 @@ int main(void)
 		HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
 
 		// Wait before doing it again
-		HAL_Delay(500);*/
+		HAL_Delay(500);
 	}
 	/* USER CODE END 3 */
 }
@@ -1817,13 +1814,13 @@ void Error(char* msg)
 void StartDefaultTask(void const * argument)
 {
 	/* init code for USB_HOST */
-	MX_USB_HOST_Init();
+	//MX_USB_HOST_Init();
 	/* USER CODE BEGIN 5 */
 
 	printf("StartDefaultTask\n");
 	audioLoop();
 
-	//uint32_t PreviousWakeTime = osKernelSysTick();
+	//uint32_t PreviousWakeTimeMPU_ACCESS_NOT_CACHEABLE = osKernelSysTick();
 	/* Infinite loop */
 	for(;;)
 	{

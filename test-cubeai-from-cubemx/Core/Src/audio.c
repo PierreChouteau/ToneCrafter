@@ -137,7 +137,7 @@ void audioLoop() {
 	arm_rfft_fast_init_f32(&FFT_struct, FFT_Length);
 
 	/* J'ai commenté*/
-	//uiDisplayBasic();
+	// uiDisplayBasic();
 
 	/* Initialize SDRAM buffers */
 	memset((int16_t*) AUDIO_SCRATCH_ADDR, 0, AUDIO_SCRATCH_SIZE * 2); // note that the size argument here always refers to bytes whatever the data type
@@ -165,7 +165,7 @@ void audioLoop() {
 
 			// osSignalSet(uiTaskHandle, 0x0003);
 			/* J'ai commenté */
-			//uiDisplayInputLevel(inputLevelL, inputLevelR);
+			// uiDisplayInputLevel(inputLevelL, inputLevelR);
 
 			inputLevelL = 0.;
 			inputLevelR = 0.;
