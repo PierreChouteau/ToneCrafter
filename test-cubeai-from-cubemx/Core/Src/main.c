@@ -175,8 +175,8 @@ int main(void)
 
 	// this disables both I and D cache when tricky debugging
 	// (but keep in mind caching approximately divides the audio processing time by 4)
-	SCB_InvalidateDCache();
-	SCB_InvalidateICache();
+	// SCB_InvalidateDCache();
+	// SCB_InvalidateICache();
 
 	/*Code Projet 7 Janvier*/
 	char buf[50];
@@ -272,14 +272,14 @@ int main(void)
 
 	/* post-init SDRAM */
 	// Deactivate speculative/cache access to first FMC Bank to save FMC bandwidth
-	// FMC_Bank1->BTCR[0] = 0x000030D2;
+	FMC_Bank1->BTCR[0] = 0x000030D2;
 
 	/* post-init touchscreen */
-	// TS_Init();
-	// printf("Touchscreen Init: OK\n");
+	TS_Init();
+	printf("Touchscreen Init: OK\n");
 
-	// SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
-	// SCB_EnableDCache();
+	SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
+	SCB_EnableDCache();
 
 	//test();
 	//audioLoop(); // comment to use RTOS (see below)
@@ -300,14 +300,14 @@ int main(void)
 	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
 	  while(1);
 	}
-
-	// Initialize neural network
-	if (!ai_tonecrafter_init(tonecrafter, &ai_params))
-	{
-	  buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
-	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
-	  while(1);
-	}
+//
+//	// Initialize neural network
+//	if (!ai_tonecrafter_init(tonecrafter, &ai_params))
+//	{
+//	  buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
+//	  HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+//	  while(1);
+//	}
 
 	/* USER CODE END 2 */
 
