@@ -49,26 +49,22 @@
 #include <ui.h>
 #include <stdio.h>
 #include "string.h"
-#include <math.h>
+#include "math.h"
 #include "bsp/disco_sai.h"
 #include "bsp/disco_base.h"
-#include "cmsis_os.h"
-#include "arm_math.h"
 
 extern SAI_HandleTypeDef hsai_BlockA2; // see main.c
 extern SAI_HandleTypeDef hsai_BlockB2;
 extern DMA_HandleTypeDef hdma_sai2_a;
 extern DMA_HandleTypeDef hdma_sai2_b;
 
-extern osThreadId defaultTaskHandle;
-extern osThreadId uiTaskHandle;
 
 // ---------- communication b/w DMA IRQ Handlers and the main while loop -------------
 
-//typedef enum {
-//	BUFFER_OFFSET_NONE = 0, BUFFER_OFFSET_HALF = 1, BUFFER_OFFSET_FULL = 2,
-//} BUFFER_StateTypeDef;
-//uint32_t audio_rec_buffer_state;
+typedef enum {
+	BUFFER_OFFSET_NONE = 0, BUFFER_OFFSET_HALF = 1, BUFFER_OFFSET_FULL = 2,
+} BUFFER_StateTypeDef;
+uint32_t audio_rec_buffer_state;
 
 
 
@@ -76,11 +72,9 @@ extern osThreadId uiTaskHandle;
 // ---------- DMA buffers ------------
 
 // whole sample count in an audio frame: (beware: as they are interleaved stereo samples, true audio frame duration is given by AUDIO_BUF_SIZE/2)
-#define AUDIO_BUF_SIZE   ((uint32_t)512)
+#define AUDIO_BUF_SIZE   ((uint32_t)120)
 /* size of a full DMA buffer made up of two half-buffers (aka double-buffering) */
 #define AUDIO_DMA_BUF_SIZE   (2 * AUDIO_BUF_SIZE)
-
-#define FFT_Length (AUDIO_BUF_SIZE / 2)
 
 
 // DMA buffers are in embedded RAM:
@@ -88,12 +82,6 @@ int16_t buf_input[AUDIO_DMA_BUF_SIZE];
 int16_t buf_output[AUDIO_DMA_BUF_SIZE];
 int16_t *buf_input_half = buf_input + AUDIO_DMA_BUF_SIZE / 2;
 int16_t *buf_output_half = buf_output + AUDIO_DMA_BUF_SIZE / 2;
-
-
-arm_rfft_fast_instance_f32 FFT_struct;
-float32_t aFFT_Output_f32[FFT_Length];
-float32_t aFFT_Input_f32[FFT_Length];
-
 
 static int pos = 0;
 
@@ -110,19 +98,12 @@ static void processAudio(int16_t*, int16_t*);
 static void accumulateInputLevels();
 static float readFromAudioScratch(int pos);
 static void writeToAudioScratch(float val, int pos);
-static void no_effect(int16_t *out, int16_t *in);
-static void echo_effect(int16_t *out, int16_t *in);
-static void overdrive_effect(int16_t *out, int16_t *in);
-static void noise_gate(int16_t *out, int16_t *in);
 
 // ----------- Local vars ------------
 
 static int count = 0; // debug
-double inputLevelL = 0;
-double inputLevelR = 0;
-double inputLevelL_cp = 0;
-double inputLevelR_cp = 0;
-
+static double inputLevelL = 0;
+static double inputLevelR = 0;
 
 // ----------- Functions ------------
 
@@ -134,15 +115,12 @@ double inputLevelR_cp = 0;
  */
 void audioLoop() {
 
-	arm_rfft_fast_init_f32(&FFT_struct, FFT_Length);
-
-	/* J'ai commenté*/
-	// uiDisplayBasic();
+	uiDisplayBasic();
 
 	/* Initialize SDRAM buffers */
 	memset((int16_t*) AUDIO_SCRATCH_ADDR, 0, AUDIO_SCRATCH_SIZE * 2); // note that the size argument here always refers to bytes whatever the data type
 
-	// audio_rec_buffer_state = BUFFER_OFFSET_NONE;
+	audio_rec_buffer_state = BUFFER_OFFSET_NONE;
 
 	// input device: INPUT_DEVICE_INPUT_LINE_1 or INPUT_DEVICE_DIGITAL_MICROPHONE_2 (not fully functional yet as you also need to change things in main.c:MX_SAI2_Init())
 	// AudioFreq: AUDIO_FREQUENCY_48K, AUDIO_FREQUENCY_16K, etc (but also change accordingly hsai_BlockA2.Init.AudioFrequency in main.c, line 855)
@@ -152,7 +130,6 @@ void audioLoop() {
 	/* main audio loop */
 	while (1) {
 
-
 		accumulateInputLevels();
 		count++;
 		if (count >= 20) {
@@ -160,45 +137,30 @@ void audioLoop() {
 			inputLevelL *= 0.05;
 			inputLevelR *= 0.05;
 
-			inputLevelL_cp = inputLevelL;
-			inputLevelR_cp = inputLevelR;
-
-			// osSignalSet(uiTaskHandle, 0x0003);
-			/* J'ai commenté */
-			// uiDisplayInputLevel(inputLevelL, inputLevelR);
+			uiDisplayInputLevel(inputLevelL, inputLevelR);
 
 			inputLevelL = 0.;
 			inputLevelR = 0.;
 		}
 
 		/* Wait until first half block has been recorded */
-		/* J'ai Commenté
 		while (audio_rec_buffer_state != BUFFER_OFFSET_HALF) {
 			asm("NOP");
-		}*/
-
-		osSignalWait(0x0001, osWaitForever);
+		}
+		audio_rec_buffer_state = BUFFER_OFFSET_NONE;
+		/* Copy recorded 1st half block */
 		processAudio(buf_output, buf_input);
-		calculateFFT(buf_output);
 
-		osSignalWait(0x0002, osWaitForever);
+		/* Wait until second half block has been recorded */
+		while (audio_rec_buffer_state != BUFFER_OFFSET_FULL) {
+			asm("NOP");
+		}
+		audio_rec_buffer_state = BUFFER_OFFSET_NONE;
+		/* Copy recorded 2nd half block */
 		processAudio(buf_output_half, buf_input_half);
-		calculateFFT(buf_output_half);
+
 	}
 }
-
-
-void calculateFFT(int16_t *in){
-
-	 for (int i = 0; i < FFT_Length; i++){
-		 aFFT_Input_f32[i] = in[i];
-	 }
-
-	 arm_rfft_fast_f32(&FFT_struct, aFFT_Input_f32, aFFT_Output_f32, 0);
-	 arm_cmplx_mag_f32(aFFT_Output_f32, aFFT_Input_f32, FFT_Length/2);
-	 osSignalSet(uiTaskHandle, 0x0003);
- }
-
 
 
 /*
@@ -212,7 +174,7 @@ static void accumulateInputLevels() {
 	// Left channel:
 	uint32_t lvl = 0;
 	for (int i = 0; i < AUDIO_DMA_BUF_SIZE; i += 2) {
-		int16_t v = (int16_t) buf_output[i];
+		int16_t v = (int16_t) buf_input[i];
 		if (v > 0)
 			lvl += v;
 		else
@@ -223,13 +185,14 @@ static void accumulateInputLevels() {
 	// Right channel:
 	lvl = 0;
 	for (int i = 1; i < AUDIO_DMA_BUF_SIZE; i += 2) {
-		int16_t v = (int16_t) buf_output[i];
+		int16_t v = (int16_t) buf_input[i];
 		if (v > 0)
 			lvl += v;
 		else
 			lvl -= v;
 	}
 	inputLevelR += (double) lvl / AUDIO_DMA_BUF_SIZE / (1 << 15);
+	;
 }
 
 // --------------------------- Callbacks implementation ---------------------------
@@ -238,8 +201,7 @@ static void accumulateInputLevels() {
  * Audio IN DMA Transfer complete interrupt.
  */
 void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef *hsai) {
-	//audio_rec_buffer_state = BUFFER_OFFSET_FULL;
-	osSignalSet(defaultTaskHandle, 0x0001);
+	audio_rec_buffer_state = BUFFER_OFFSET_FULL;
 	return;
 }
 
@@ -247,8 +209,7 @@ void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef *hsai) {
  * Audio IN DMA Half Transfer complete interrupt.
  */
 void HAL_SAI_RxHalfCpltCallback(SAI_HandleTypeDef *hsai) {
-	//audio_rec_buffer_state = BUFFER_OFFSET_HALF;
-	osSignalSet(defaultTaskHandle, 0x0002);
+	audio_rec_buffer_state = BUFFER_OFFSET_HALF;
 	return;
 }
 
@@ -337,6 +298,7 @@ static void overdrive_effect(int16_t *out, int16_t *in) {
 
 static void noise_gate(int16_t *out, int16_t *in) {
 
+	// Le noise gate fonctionne à coup sur ! mais le problème c'est qu'il faut le géré par rapport au niveau sonore mon pote
 	float threshold = 0.001;
 	float attenuation = 100000;
 
@@ -347,7 +309,6 @@ static void noise_gate(int16_t *out, int16_t *in) {
 	}
 
 }
-
 
 /**
  * This function is called every time an audio frame
@@ -362,9 +323,8 @@ static void processAudio(int16_t *out, int16_t *in) {
 
 	no_effect(out, in); // If you want no effect on the audio output
 	// echo_effect(out, in); // If you want a echo effect on the audio output
-	//noise_gate(out, in);
+	// noise_gate(out, in);
 
 	LED_Off();
 }
-
 

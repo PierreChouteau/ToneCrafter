@@ -112,14 +112,8 @@ UART_HandleTypeDef huart6;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 SDRAM_HandleTypeDef hsdram1;
 
-osThreadId defaultTaskHandle;
-osThreadId uiTaskHandle;
-
-extern double inputLevelR_cp;
-extern double inputLevelL_cp;
-
-#define FFT_Length 256
-extern float aFFT_Input_f32[FFT_Length];
+//osThreadId defaultTaskHandle;
+//osThreadId uiTaskHandle;
 
 
 /* USER CODE BEGIN PV */
@@ -157,8 +151,8 @@ static void MX_TIM8_Init(void);
 static void MX_TIM12_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART6_UART_Init(void);
-void StartDefaultTask(void const * argument);
-void startUITask(void const * argument);
+//void StartDefaultTask(void const * argument);
+//void startUITask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -179,11 +173,11 @@ int main(void)
 
 	// this disables both I and D cache when tricky debugging
 	// (but keep in mind caching approximately divides the audio processing time by 4)
-//	SCB_InvalidateDCache();
-//	SCB_InvalidateICache();
+	SCB_InvalidateDCache();
+	SCB_InvalidateICache();
 
 
-	char buf[50];
+	/*char buf[50];
 	int buf_len = 0;
 	ai_error ai_err;
 	ai_i32 nbatch;
@@ -208,8 +202,8 @@ int main(void)
 
 	// Set working memory and get weights/biases from model
 	ai_network_params ai_params = {
-	AI_TONECRAFTER_DATA_WEIGHTS(ai_tonecrafter_data_weights_get()),
-	AI_TONECRAFTER_DATA_ACTIVATIONS(activations)
+		AI_TONECRAFTER_DATA_WEIGHTS(ai_tonecrafter_data_weights_get()),
+		AI_TONECRAFTER_DATA_ACTIVATIONS(activations)
 	};
 
 
@@ -217,7 +211,7 @@ int main(void)
 	ai_input[0].n_batches = 1;
 	ai_input[0].data = AI_HANDLE_PTR(in_data);
 	ai_output[0].n_batches = 1;
-	ai_output[0].data = AI_HANDLE_PTR(out_data);
+	ai_output[0].data = AI_HANDLE_PTR(out_data);*/
 
 	/* USER CODE END 1 */
 
@@ -230,7 +224,7 @@ int main(void)
 	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	// HAL_Init();
+	HAL_Init();
 
 	/* USER CODE BEGIN Init */
 
@@ -275,17 +269,17 @@ int main(void)
 
 	/* post-init SDRAM */
 	// Deactivate speculative/cache access to first FMC Bank to save FMC bandwidth
-//	FMC_Bank1->BTCR[0] = 0x000030D2;
+	FMC_Bank1->BTCR[0] = 0x000030D2;
 
 	/* post-init touchscreen */
-	//TS_Init();
-	//printf("Touchscreen Init: OK\n");
+	TS_Init();
+	printf("Touchscreen Init: OK\n");
 
-	//SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
-	//SCB_EnableDCache();
+	SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
+	SCB_EnableDCache();
 
 	//test();
-	//audioLoop(); // comment to use RTOS (see below)
+	audioLoop(); // comment to use RTOS (see below)
 
 	/* USER CODE END 2 */
 
@@ -307,19 +301,19 @@ int main(void)
 
 	/* Create the thread(s) */
 	/* definition and creation of defaultTask */
-	//osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
-	//defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+//	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
+//	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
 	/* definition and creation of uiTask */
-	//osThreadDef(uiTask, startUITask, osPriorityLow, 0, 2048); // 128 = stack size
-	//uiTaskHandle = osThreadCreate(osThread(uiTask), NULL);
+//	osThreadDef(uiTask, startUITask, osPriorityLow, 0, 2048); // 128 = stack size
+//	uiTaskHandle = osThreadCreate(osThread(uiTask), NULL);
 
 	/* USER CODE BEGIN RTOS_THREADS */
 
 	/* USER CODE END RTOS_THREADS */
 
 	/* Start scheduler */
-	//osKernelStart();
+//	osKernelStart();
 
 	/* We should never get here as control is now taken by the scheduler */
 	/* Infinite loop */
@@ -327,7 +321,7 @@ int main(void)
 
 	// ici ton code !
 
-    buf_len = sprintf(buf, "\r\n\r\nSTM32 X-Cube-AI test\r\n");
+    /*buf_len = sprintf(buf, "\r\n\r\nSTM32 X-Cube-AI test\r\n");
     HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
 
     // Create instance of neural network
@@ -345,14 +339,14 @@ int main(void)
       buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
       HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
       while(1);
-    }
+    }*/
 
 	while (1)
 	{
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		LED_Toggle();
+		/*LED_Toggle();
 		HAL_Delay(500);
 
 		  // Fill input buffer (use test value)
@@ -380,7 +374,7 @@ int main(void)
 		HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
 
 		// Wait before doing it again
-		HAL_Delay(500);
+		HAL_Delay(500);*/
 	}
 	/* USER CODE END 3 */
 }
@@ -1852,15 +1846,15 @@ void startUITask(void const * argument)
 	printf("StartLedTask\n");
 
 	uiDisplayBasic();
-	int x = 40;
+	/* int x = 40;
 	int y1 = 80;
-	int time = 0;
+	int time = 0;*/
 	// PB_GetState() = GPIO_PIN_SET ou GPIO_PIN_RESET
 
 	/* Infinite loop */
 	for(;;)
 	{
-		osSignalWait(0x0003, osWaitForever);
+		/*osSignalWait(0x0003, osWaitForever);
 		uiDisplayInputLevel(inputLevelL_cp, inputLevelR_cp);
 		for(int y = FFT_Length/2 + y1; y > y1; y--){
 			LCD_DrawPixel_Color(x + time, y, aFFT_Input_f32[(FFT_Length/2 + y1) - y]);
@@ -1870,7 +1864,7 @@ void startUITask(void const * argument)
 		}
 		else{
 			time = 0;
-		}
+		}*/
 
 		//osDelay(900);
 		//LED_Toggle();
