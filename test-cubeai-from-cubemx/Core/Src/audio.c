@@ -53,6 +53,13 @@
 #include "bsp/disco_sai.h"
 #include "bsp/disco_base.h"
 
+#include "ai_datatypes_defines.h"
+#include "ai_platform.h"
+#include "ai_platform_interface.h"
+
+#include "tonecrafter.h"
+#include "tonecrafter_data.h"
+
 extern SAI_HandleTypeDef hsai_BlockA2; // see main.c
 extern SAI_HandleTypeDef hsai_BlockB2;
 extern DMA_HandleTypeDef hdma_sai2_a;
@@ -72,7 +79,7 @@ uint32_t audio_rec_buffer_state;
 // ---------- DMA buffers ------------
 
 // whole sample count in an audio frame: (beware: as they are interleaved stereo samples, true audio frame duration is given by AUDIO_BUF_SIZE/2)
-#define AUDIO_BUF_SIZE   ((uint32_t)120)
+#define AUDIO_BUF_SIZE   ((uint32_t)300)
 /* size of a full DMA buffer made up of two half-buffers (aka double-buffering) */
 #define AUDIO_DMA_BUF_SIZE   (2 * AUDIO_BUF_SIZE)
 
@@ -127,6 +134,57 @@ void audioLoop() {
 	//start_Audio_Processing(buf_output, buf_input, AUDIO_DMA_BUF_SIZE, INPUT_DEVICE_DIGITAL_MICROPHONE_2, SAI_AUDIO_FREQUENCY_16K); // AUDIO_FREQUENCY_48K);
 	start_Audio_Processing(buf_output, buf_input, AUDIO_DMA_BUF_SIZE, INPUT_DEVICE_DIGITAL_MICROPHONE_2, hsai_BlockA2.Init.AudioFrequency);
 
+	/* Initialisation variable projet */
+	char buf[50];
+	int buf_len = 0;
+	ai_error ai_err;
+	ai_i32 nbatch;
+	float y_val;
+	float test = 0.0;
+
+	// Chunk of memory used to hold intermediate values for neural network
+	AI_ALIGNED(4) ai_u8 activations[AI_TONECRAFTER_DATA_ACTIVATIONS_SIZE];
+
+	// Buffers used to store input and output tensors
+	AI_ALIGNED(4) ai_i8 in_data[AI_TONECRAFTER_IN_1_SIZE_BYTES];
+	AI_ALIGNED(4) ai_i8 out_data[AI_TONECRAFTER_OUT_1_SIZE_BYTES];
+
+	// Pointer to our model
+	ai_handle tonecrafter = AI_HANDLE_NULL;
+
+	// Initialize wrapper structs that hold pointers to data and info about the
+	// data (tensor height, width, channels)
+	ai_buffer ai_input[AI_TONECRAFTER_IN_NUM] = AI_TONECRAFTER_IN;
+	ai_buffer ai_output[AI_TONECRAFTER_OUT_NUM] = AI_TONECRAFTER_OUT;
+
+	// Set working memory and get weights/biases from model
+	ai_network_params ai_params = {
+		AI_TONECRAFTER_DATA_WEIGHTS(ai_tonecrafter_data_weights_get()),
+		AI_TONECRAFTER_DATA_ACTIVATIONS(activations)
+	};
+
+
+	// Set pointers wrapper structs to our data buffers
+	ai_input[0].n_batches = 1;
+	ai_input[0].data = AI_HANDLE_PTR(in_data);
+	ai_output[0].n_batches = 1;
+	ai_output[0].data = AI_HANDLE_PTR(out_data);
+
+	// Create instance of neural network
+	ai_err = ai_tonecrafter_create(&tonecrafter, AI_TONECRAFTER_DATA_CONFIG);
+	if (ai_err.type != AI_ERROR_NONE)
+	{
+	  buf_len = sprintf(buf, "Error: could not create NN instance\r\n");
+	  while(1);
+	}
+
+	// Initialize neural network
+	if (!ai_tonecrafter_init(tonecrafter, &ai_params))
+	{
+	  buf_len = sprintf(buf, "Error: could not initialize NN\r\n");
+	  while(1);
+	}
+
 	/* main audio loop */
 	while (1) {
 
@@ -148,6 +206,26 @@ void audioLoop() {
 			asm("NOP");
 		}
 		audio_rec_buffer_state = BUFFER_OFFSET_NONE;
+
+		for (int k = 0; k < AUDIO_BUF_SIZE - 120; k++){
+
+			// Fill input buffer (use test value)
+			for (uint32_t i = 0; i < AI_TONECRAFTER_IN_1_SIZE; i++)
+			{
+			  ((ai_float *)in_data)[i] = (ai_float)buf_input[k + i];
+			}
+
+			// Perform inference
+			nbatch = ai_tonecrafter_run(tonecrafter, &ai_input[0], &ai_output[0]);
+			if (nbatch != 1) {
+			  buf_len = sprintf(buf, "Error: could not run inference\r\n");
+			}
+
+			// Read output (predicted y) of neural network
+			y_val = ((float *)out_data)[0];
+			buf_input[k] = y_val;
+		}
+
 		/* Copy recorded 1st half block */
 		processAudio(buf_output, buf_input);
 
@@ -156,6 +234,26 @@ void audioLoop() {
 			asm("NOP");
 		}
 		audio_rec_buffer_state = BUFFER_OFFSET_NONE;
+
+		for (int k = 0; k < AUDIO_BUF_SIZE - 120; k++){
+
+			// Fill input buffer (use test value)
+			for (uint32_t i = 0; i < AI_TONECRAFTER_IN_1_SIZE; i++)
+			{
+			  ((ai_float *)in_data)[i] = (ai_float)buf_input_half[k + i];
+			}
+
+			// Perform inference
+			nbatch = ai_tonecrafter_run(tonecrafter, &ai_input[0], &ai_output[0]);
+			if (nbatch != 1) {
+			  buf_len = sprintf(buf, "Error: could not run inference\r\n");
+			}
+
+			// Read output (predicted y) of neural network
+			y_val = ((float *)out_data)[0];
+			buf_input_half[k] = y_val;
+		}
+
 		/* Copy recorded 2nd half block */
 		processAudio(buf_output_half, buf_input_half);
 

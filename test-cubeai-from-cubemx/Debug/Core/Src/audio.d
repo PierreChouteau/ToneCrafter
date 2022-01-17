@@ -51,7 +51,15 @@ Core/Src/audio.o: ../Core/Src/audio.c ../Core/Inc/audio.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_hcd.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h \
  ../Core/Inc/fonts.h ../Core/Inc/types.h ../Core/Inc/bsp/disco_sai.h \
- ../Core/Inc/bsp/wm8994.h ../Core/Inc/bsp/disco_base.h
+ ../Core/Inc/bsp/wm8994.h ../Core/Inc/bsp/disco_base.h \
+ ../Middlewares/ST/AI/Inc/ai_datatypes_defines.h \
+ ../Middlewares/ST/AI/Inc/ai_platform.h \
+ ../Middlewares/ST/AI/Inc/ai_platform_interface.h \
+ ../Middlewares/ST/AI/Inc/datatypes_network.h \
+ ../Middlewares/ST/AI/Inc/ai_datatypes_format.h \
+ ../Middlewares/ST/AI/Inc/core_datatypes.h \
+ ../Middlewares/ST/AI/Inc/formats_list.h ../X-CUBE-AI/App/tonecrafter.h \
+ ../X-CUBE-AI/App/tonecrafter_data.h
 
 ../Core/Inc/audio.h:
 
@@ -168,3 +176,21 @@ Core/Src/audio.o: ../Core/Src/audio.c ../Core/Inc/audio.h \
 ../Core/Inc/bsp/wm8994.h:
 
 ../Core/Inc/bsp/disco_base.h:
+
+../Middlewares/ST/AI/Inc/ai_datatypes_defines.h:
+
+../Middlewares/ST/AI/Inc/ai_platform.h:
+
+../Middlewares/ST/AI/Inc/ai_platform_interface.h:
+
+../Middlewares/ST/AI/Inc/datatypes_network.h:
+
+../Middlewares/ST/AI/Inc/ai_datatypes_format.h:
+
+../Middlewares/ST/AI/Inc/core_datatypes.h:
+
+../Middlewares/ST/AI/Inc/formats_list.h:
+
+../X-CUBE-AI/App/tonecrafter.h:
+
+../X-CUBE-AI/App/tonecrafter_data.h:
