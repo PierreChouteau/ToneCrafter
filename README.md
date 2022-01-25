@@ -68,7 +68,7 @@ As of the 03/05/2021, our yearly project has ended. We will continue to work on 
 
 ## What's new ? (25/01/2022)
 For this new year, I (Pierre Chouteau) continued the project for my final year at the ENSEA. 
-Concretely, I have mainly advanced the Software part. To create an accurate model, I based myself on the article and the code of Mr [Keith Bloemer](https://github.com/GuitarML) and the paper of Aalto, which both use an artificial intelligence model based on LSTMs. This  [model](https://github.com/PierreChouteau/ToneCrafter/tree/main/Software/Effect%20Reproduction/LSTM%20Model) allows a good reproduction of a distortion effect.    
+Concretely, I have mainly advanced the Software part. To create an accurate model, I based myself on the article and the code of [Keith Bloemer](https://github.com/GuitarML) and the paper of Aalto, which both use an artificial intelligence model based on LSTMs. This  [model](https://github.com/PierreChouteau/ToneCrafter/tree/main/Software/Effect%20Reproduction/LSTM%20Model) allows a good reproduction of a distortion effect.    
 *The origin of the model, its creation, the dataset as well as the training and the results are detailed in the report.*
 
 The part I really focused on this year is the implementation of this model, not on Raspberry like Mr Bloemer did, but directly on STM32, as close as possible to the hardware. This will allow to gain in performance, when the code will be entirely functional :
