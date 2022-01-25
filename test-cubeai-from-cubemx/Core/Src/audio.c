@@ -79,7 +79,7 @@ uint32_t audio_rec_buffer_state;
 // ---------- DMA buffers ------------
 
 // whole sample count in an audio frame: (beware: as they are interleaved stereo samples, true audio frame duration is given by AUDIO_BUF_SIZE/2)
-#define AUDIO_BUF_SIZE   ((uint32_t)300)
+#define AUDIO_BUF_SIZE   ((uint32_t)140)
 /* size of a full DMA buffer made up of two half-buffers (aka double-buffering) */
 #define AUDIO_DMA_BUF_SIZE   (2 * AUDIO_BUF_SIZE)
 
@@ -225,7 +225,6 @@ void audioLoop() {
 			y_val = ((float *)out_data)[0];
 			buf_input[k] = y_val;
 		}
-
 		/* Copy recorded 1st half block */
 		processAudio(buf_output, buf_input);
 
@@ -238,7 +237,7 @@ void audioLoop() {
 		for (int k = 0; k < AUDIO_BUF_SIZE - 120; k++){
 
 			// Fill input buffer (use test value)
-			for (uint32_t i = 0; i < AI_TONECRAFTER_IN_1_SIZE; i++)
+			for (uint32_t i = 0; i < AI_TONECRAFTER_IN_1_SIZE ; i++)
 			{
 			  ((ai_float *)in_data)[i] = (ai_float)buf_input_half[k + i];
 			}
@@ -253,7 +252,6 @@ void audioLoop() {
 			y_val = ((float *)out_data)[0];
 			buf_input_half[k] = y_val;
 		}
-
 		/* Copy recorded 2nd half block */
 		processAudio(buf_output_half, buf_input_half);
 

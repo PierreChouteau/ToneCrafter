@@ -176,7 +176,7 @@ int main(void)
 	SCB_InvalidateDCache();
 	SCB_InvalidateICache();
 
-
+	/* Premier test du réseau sur STM */
 	/*char buf[50];
 	int buf_len = 0;
 	ai_error ai_err;
@@ -251,15 +251,15 @@ int main(void)
 	MX_QUADSPI_Init();
 	MX_RTC_Init();
 	MX_SAI2_Init();
-	MX_SDMMC1_SD_Init();
-	MX_SPDIFRX_Init();
-	MX_TIM1_Init();
-	MX_TIM2_Init();
-	MX_TIM3_Init();
-	MX_TIM5_Init();
-	MX_TIM8_Init();
+//	MX_SDMMC1_SD_Init();
+//	MX_SPDIFRX_Init();
+//	MX_TIM1_Init();
+//	MX_TIM2_Init();
+//	MX_TIM3_Init();
+//	MX_TIM5_Init();
+//	MX_TIM8_Init();
 	MX_TIM12_Init();
-	MX_USART1_UART_Init();
+//	MX_USART1_UART_Init();
 	MX_USART6_UART_Init();
 	//MX_FATFS_Init();
 //	MX_LIBJPEG_Init();
@@ -269,11 +269,11 @@ int main(void)
 
 	/* post-init SDRAM */
 	// Deactivate speculative/cache access to first FMC Bank to save FMC bandwidth
-	FMC_Bank1->BTCR[0] = 0x000030D2;
+//	FMC_Bank1->BTCR[0] = 0x000030D2;
 
 	/* post-init touchscreen */
-	TS_Init();
-	printf("Touchscreen Init: OK\n");
+//	TS_Init();
+//	printf("Touchscreen Init: OK\n");
 
 	SCB_EnableICache(); // comment out if in step debugging to avoid weird behaviours
 	SCB_EnableDCache();

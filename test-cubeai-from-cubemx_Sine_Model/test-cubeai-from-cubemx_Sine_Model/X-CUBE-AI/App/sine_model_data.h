@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    sine_model_data.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Mon Jan 17 08:57:09 2022
+  * @date    Mon Jan 17 10:43:58 2022
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -28,7 +28,7 @@
 
 #define AI_SINE_MODEL_DATA_ACTIVATIONS_SIZE     (128)
 
-#define AI_SINE_MODEL_DATA_WEIGHTS_SIZE         (1284)
+#define AI_SINE_MODEL_DATA_WEIGHTS_SIZE         (452)
 
 #define AI_SINE_MODEL_DATA_ACTIVATIONS(ptr_)  \
   AI_BUFFER_OBJ_INIT( \

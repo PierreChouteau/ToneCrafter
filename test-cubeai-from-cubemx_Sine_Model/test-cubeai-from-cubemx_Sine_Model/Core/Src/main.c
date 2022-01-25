@@ -221,8 +221,8 @@ int main(void)
   MX_TIM12_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
-//  MX_FATFS_Init();
-//  MX_USB_HOST_Init();
+  MX_FATFS_Init();
+  MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
 
   // Start timer/counter
@@ -266,7 +266,6 @@ int main(void)
 	for (uint32_t i = 0; i < AI_SINE_MODEL_IN_1_SIZE; i++)
 	{
 	  ((ai_float *)in_data)[i] = (ai_float)test;
-	  test += 0.1;
 	}
 
 	// Get current timestamp
@@ -285,6 +284,8 @@ int main(void)
 	// Print output of neural network along with inference time (microseconds)
 	buf_len = sprintf(buf, "Output: %f | Duration: %lu\r\n", y_val, htim12.Instance->CNT - timestamp);
 	HAL_UART_Transmit(&huart6, (uint8_t *)buf, buf_len, 100);
+
+	test += 3.1415 / 2;
 
 	// Wait before doing it again
 	HAL_Delay(500);

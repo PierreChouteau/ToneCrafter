@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    sine_model.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    Mon Jan 17 08:57:09 2022
+  * @date    Mon Jan 17 10:43:58 2022
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -53,7 +53,7 @@
 #endif
 
 #undef AI_TOOLS_DATE_TIME
-#define AI_TOOLS_DATE_TIME   "Mon Jan 17 08:57:09 2022"
+#define AI_TOOLS_DATE_TIME   "Mon Jan 17 10:43:58 2022"
 
 #undef AI_TOOLS_COMPILE_TIME
 #define AI_TOOLS_COMPILE_TIME    __DATE__ " " __TIME__
@@ -129,7 +129,7 @@ AI_ARRAY_OBJ_DECLARE(
 
 /* Array#3 */
 AI_ARRAY_OBJ_DECLARE(
-  dense_1_weights_array, AI_ARRAY_FORMAT_FLOAT,
+  dense_1_weights_array, AI_ARRAY_FORMAT_LUT4_FLOAT,
   NULL, NULL, 256, AI_STATIC)
 
 /* Array#4 */
@@ -198,7 +198,7 @@ AI_TENSOR_OBJ_DECLARE(
 AI_TENSOR_OBJ_DECLARE(
   dense_1_weights, AI_STATIC,
   0x0, 0x0,
-  AI_SHAPE_INIT(4, 16, 16, 1, 1), AI_STRIDE_INIT(4, 4, 64, 1024, 1024),
+  AI_SHAPE_INIT(4, 16, 16, 1, 1), AI_STRIDE_INIT(4, 1, 8, 128, 128),
   1, &dense_1_weights_array, NULL)
 
 /* Tensor #4 */
@@ -346,7 +346,7 @@ AI_LAYER_OBJ_DECLARE(
 AI_NETWORK_OBJ_DECLARE(
   AI_NET_OBJ_INSTANCE, AI_STATIC,
   AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_U8,
-                     1, 1, 1284, 1,
+                     1, 1, 452, 1,
                      NULL),
   AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_U8,
                      1, 1, 128, 1,
@@ -402,16 +402,16 @@ ai_bool sine_model_configure_weights(
     /* Updating weights (byte) offsets */
     
     dense_2_bias_array.format |= AI_FMT_FLAG_CONST;
-    dense_2_bias_array.data = AI_PTR(weights + 1280);
-    dense_2_bias_array.data_start = AI_PTR(weights + 1280);
+    dense_2_bias_array.data = AI_PTR(weights + 448);
+    dense_2_bias_array.data_start = AI_PTR(weights + 448);
     dense_2_weights_array.format |= AI_FMT_FLAG_CONST;
-    dense_2_weights_array.data = AI_PTR(weights + 1216);
-    dense_2_weights_array.data_start = AI_PTR(weights + 1216);
+    dense_2_weights_array.data = AI_PTR(weights + 384);
+    dense_2_weights_array.data_start = AI_PTR(weights + 384);
     dense_1_bias_array.format |= AI_FMT_FLAG_CONST;
-    dense_1_bias_array.data = AI_PTR(weights + 1152);
-    dense_1_bias_array.data_start = AI_PTR(weights + 1152);
+    dense_1_bias_array.data = AI_PTR(weights + 320);
+    dense_1_bias_array.data_start = AI_PTR(weights + 320);
     dense_1_weights_array.format |= AI_FMT_FLAG_CONST;
-    dense_1_weights_array.data = AI_PTR(weights + 128);
+    dense_1_weights_array.data = AI_PTR(weights + 192);
     dense_1_weights_array.data_start = AI_PTR(weights + 128);
     dense_0_bias_array.format |= AI_FMT_FLAG_CONST;
     dense_0_bias_array.data = AI_PTR(weights + 64);
