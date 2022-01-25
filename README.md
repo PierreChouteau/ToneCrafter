@@ -12,6 +12,7 @@ We are also working on a hardware implementation using a STM32 µC that will all
   * [Dataset](#dataset)
   * [Useful links](#useful-links)
 - [What's next ?](#whats-next-)
+- [What's new ?](#whats-new-)
 
 ## Our work so far
 ### Software
