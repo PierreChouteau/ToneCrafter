@@ -69,7 +69,7 @@ As of the 03/05/2021, our yearly project has ended. We will continue to work on 
 ## What's new ? (25/01/2022)
 For this new year, I (Pierre Chouteau) continued the project for my final year at the ENSEA. 
 Concretely, I have mainly advanced the Software part. To create an accurate model, I based myself on the article and the code of Mr Keith Bloemer and the paper of Aalto, which both use an artificial intelligence model based on LSTMs. This model allows a good reproduction of a distortion effect.    
-The origin of the model, its creation, the dataset as well as the training and the results are detailed in this [report](https://github.com/PierreChouteau/ToneCrafter/blob/main/Report/2022/%5BFR%5D_Final_Report_2022.pdf).
+*The origin of the model, its creation, the dataset as well as the training and the results are detailed in the report.*
 
 The part I really focused on this year is the implementation of this model, not on Raspberry like Mr Bloemer did, but directly on STM32, as close as possible to the hardware. This will allow to gain in performance, when the code will be entirely functional :
 
@@ -78,3 +78,5 @@ The part I really focused on this year is the implementation of this model, not 
 
 * In a second step, I tried to implement the LSTM network, but there are still some problems to solve... 
 It looks like the model function on the STM32 card, but when I try it in real-time using the embedded microphone, the effect is not as expected. It sounds more like a robot voice than a distortion... See this part [here](https://github.com/PierreChouteau/ToneCrafter/tree/main/Software/Implementation%20on%20STM32/ToneCrafter%20on%20STM).
+
+*For a more in-depth version of what has been done this year, see the [project report](https://github.com/PierreChouteau/ToneCrafter/blob/main/Report/2022/%5BFR%5D_Final_Report_2022.pdf) available in French.*
