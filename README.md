@@ -67,13 +67,13 @@ For the maths oriented approach, we used the excellent [IDMT-SMT-Audio_Effects D
 As of the 03/05/2021, our yearly project has ended. We will continue to work on ToneCrafter at a lighter pace, as we'll be completing our summer internships. If all goes well, some new students will pick up the project in the fall to continue to build on top of our work. In the mean time, don't hesitate to take part in our project, via issues or pull requests.  
 
 ## What's new ? (25/01/2022)
-For this new year, I (Pierre Chouteau) continued the project for my final year at the ENSEA. 
+For this new year, I (Pierre Chouteau) continued the project for my final year at the ENSEA.    
 Concretely, I have mainly advanced the Software part. To create an accurate model, I based myself on the article and the code of [Keith Bloemer](https://github.com/GuitarML) and the paper of Aalto, which both use an artificial intelligence model based on LSTMs. This  [model](https://github.com/PierreChouteau/ToneCrafter/tree/main/Software/Effect%20Reproduction/LSTM%20Model) allows a good reproduction of a distortion effect.    
 *The origin of the model, its creation, the dataset as well as the training and the results are detailed in the report.*
 
-The part I really focused on this year is the implementation of this model, not on Raspberry like Mr Bloemer did, but directly on STM32, as close as possible to the hardware. This will allow to gain in performance, when the code will be entirely functional :
+Then, the part I really focused on this year is the implementation of this model, not on Raspberry like Mr Bloemer did, but directly on STM32, as close as possible to the hardware. This will allow to gain in performance, when the code will be entirely functional :
 
-* In order to understand the implementation of a neural network on STM, in collaboration with [Elisa DELHOMME](https://github.com/elisadelh), we started by implementing a simpler model of sine prediction. It turns out, after different tests, that it works correctly, both under Keras and on the STM. You can see this work [here](https://github.com/PierreChouteau/ToneCrafter/tree/main/Software/Implementation%20on%20STM32/Sinus%20Prediction%20on%20STM).   
+* In order to understand the implementation of a neural network on STM, in collaboration with [Elisa DELHOMME](https://github.com/elisadelh), we started by implementing a simpler model of sine prediction. It turns out, after different tests, that it works correctly, both under Keras and on the STM32. You can see this work [here](https://github.com/PierreChouteau/ToneCrafter/tree/main/Software/Implementation%20on%20STM32/Sinus%20Prediction%20on%20STM).   
 ***NB***: More details concerning the creation, the realization and the use of such a project within STM32CubeIDE are available in the tutorial co-created with Elisa.   
 
 * In a second step, I tried to implement the LSTM network, but there are still some problems to solve... 
