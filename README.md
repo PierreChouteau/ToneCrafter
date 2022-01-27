@@ -74,7 +74,7 @@ Concretely, I have mainly advanced the Software part. To create an accurate mode
 Then, the part I really focused on this year is the implementation of this model, not on Raspberry like Mr Bloemer did, but directly on STM32, as close as possible to the hardware. This will allow to gain in performance, when the code will be entirely functional :
 
 * In order to understand the implementation of a neural network on STM, in collaboration with [Elisa DELHOMME](https://github.com/elisadelh), we started by implementing a simpler model of sine prediction. It turns out, after different tests, that it works correctly, both under Keras and on the STM32. You can see this work [here](https://github.com/PierreChouteau/ToneCrafter/tree/main/Software/Implementation%20on%20STM32/Sinus%20Prediction%20on%20STM).   
-***NB***: More details concerning the creation, the realization and the use of such a project within STM32CubeIDE are available in the tutorial co-created with Elisa.   
+***NB***: More details concerning the creation, the realization and the use of such a project within STM32CubeIDE are available in the [tutorial](https://github.com/PierreChouteau/ToneCrafter/blob/main/Report/tutoriel_X-Cube_AI.pdf) co-created with Elisa.   
 
 * In a second step, I tried to implement the LSTM network, but there are still some problems to solve... 
 It looks like the model function on the STM32 card, but when I try it in real-time using the embedded microphone, the effect is not as expected. It sounds more like a robot voice than a distortion... See this part [here](https://github.com/PierreChouteau/ToneCrafter/tree/main/Software/Implementation%20on%20STM32/ToneCrafter%20on%20STM).
